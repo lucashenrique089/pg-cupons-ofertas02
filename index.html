@@ -837,7 +837,7 @@
     <section class="rp-cacada" id="rpCacada">
       <span class="rp-cacada-badge"><span class="material-icons-outlined">confirmation_number</span> Novo · Caça ao cupom</span>
       <h2>Ache o bilhete dourado e ganhe <span data-cacada="desconto">10%</span> em um serviço</h2>
-      <p class="rp-cacada-lead">Durante todo o mês de novembro, à meia-noite, o bilhete muda de lugar nesta página e o serviço premiado também muda. Encontre o bilhete e garanta o desconto na loja.</p>
+      <p class="rp-cacada-lead">Até 30 de novembro, todo dia à meia-noite, o bilhete muda de lugar nesta página e o serviço premiado também muda. Encontre o bilhete e garanta o desconto na loja.</p>
       <p class="rp-cacada-periodo" id="rpCacadaPeriodo" hidden></p>
 
       <ol class="rp-cacada-passos">
@@ -870,7 +870,7 @@
         Desafiar um amigo
       </button>
 
-      <p class="rp-cacada-regras">Campanha válida de 01/11 a 30/11. Desconto de <span data-cacada="desconto">10%</span> no serviço indicado no cupom, somente na loja escolhida. O cupom vale até 30/11 e pode ser usado uma única vez. Você pode ganhar um cupom por dia, e cada serviço só uma vez no mês. Não cumulativo com outras promoções de serviço.</p>
+      <p class="rp-cacada-regras">Campanha válida até 30/11. Desconto de <span data-cacada="desconto">10%</span> no serviço indicado no cupom, somente na loja escolhida. O cupom vale até 30/11 e pode ser usado uma única vez. Você pode ganhar um cupom por dia, e cada serviço só uma vez durante a campanha. Não cumulativo com outras promoções de serviço.</p>
     </section>
 
     <div class="rp-banner" data-esconderijo="banner" data-dica="Procure perto de onde falamos de parcelamento.">
@@ -942,7 +942,7 @@
       <button class="rp-btn-fechar" type="button" data-fechar-modal aria-label="Fechar">&times;</button>
       <span class="rp-cacada-badge"><span class="material-icons-outlined">confirmation_number</span> Caça ao cupom</span>
       <h3 id="rpConviteTitulo">Tem um cupom escondido nesta página!</h3>
-      <p class="rp-modal-texto">Todo dia escondemos um <strong>bilhete dourado</strong> num lugar diferente da página. Quem acha ganha <strong><span data-cacada="desconto">10%</span> de desconto em um serviço</strong> nas nossas lojas. Vale todos os dias de novembro!</p>
+      <p class="rp-modal-texto">Todo dia escondemos um <strong>bilhete dourado</strong> num lugar diferente da página. Quem acha ganha <strong><span data-cacada="desconto">10%</span> de desconto em um serviço</strong> nas nossas lojas. Vale todos os dias até 30/11!</p>
       <div class="rp-convite-bilhete">
         <svg class="rp-modal-icone" viewBox="0 0 40 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3 2H37a2 2 0 0 1 2 2V10a4 4 0 0 0 0 8V24a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V18a4 4 0 0 0 0-8V4a2 2 0 0 1 2-2Z" fill="#FBBD00" stroke="#0B1D45" stroke-width="1.5"/><path d="M28 5V23" stroke="#0B1D45" stroke-width="1.2" stroke-dasharray="2 2"/><text x="14.5" y="18.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#0B1D45">%</text></svg>
         <span>O serviço premiado de hoje é <strong>surpresa</strong>: pode ser <span id="rpConviteLista">qualquer um dos nossos serviços</span>.</span>
@@ -2401,7 +2401,7 @@
     ],
     desconto: '10%',                  // >>> AJUSTAR <<< provisório
     // Período da campanha (datas no fuso de São Paulo, formato AAAA-MM-DD)
-    inicio: '2026-11-01',
+    inicio: '2026-10-29',   // >>> AJUSTAR <<< começou antes para a apresentação; volte para '2026-11-01' se quiser
     fim:    '2026-11-30',
     // >>> AJUSTAR <<< endereços das lojas (romapneus.com.br/filiais).
     // O nome e o endereço saem impressos no PDF do cliente.
@@ -2732,10 +2732,10 @@
 
     /* --- Modo prévia ---
        Abra a página com ?previa-cacada no fim do endereço para testar ou
-       apresentar fora de novembro. Na prévia o período é ignorado e o
+       apresentar fora do período. Na prévia o período é ignorado e o
        resgate não fica gravado (dá para repetir quantas vezes quiser).
        SEGURANÇA: a prévia só funciona ANTES do início da campanha. A partir
-       de 01/11 o parâmetro é ignorado, para nenhum cliente burlar o limite. */
+       da data de início o parâmetro é ignorado, para nenhum cliente burlar o limite. */
     let previa = false;
     try { previa = new URLSearchParams(window.location.search).has('previa-cacada'); } catch (e) {}
     if (hoje >= CACADA.inicio) previa = false;
@@ -2774,10 +2774,11 @@
       gravarStorage(chaveResgate, JSON.stringify({ loja: loja.nome }));
     }
 
-    /* --- Serviços já ganhos no mês (neste aparelho) ---
+    /* --- Serviços já ganhos na campanha (neste aparelho) ---
        Guardamos a lista de códigos ganhos, ex.: ["ROMA-ALINHAMENTO","ROMA-FREIOS"].
        Se o serviço sorteado hoje já está na lista, o cliente não ganha de novo. */
-    const chaveGanhos = 'rp_cacada_ganhos_' + hoje.slice(0, 7); // ex.: rp_cacada_ganhos_2026-11
+    // A chave usa a data de início: a lista vale para a campanha inteira, mesmo virando o mês
+    const chaveGanhos = 'rp_cacada_ganhos_' + CACADA.inicio;
     function lerGanhos() {
       if (previa) return [];
       try { return JSON.parse(lerStorage(chaveGanhos) || '[]'); } catch (e) { return []; }
@@ -2796,7 +2797,7 @@
     bilhete.className = 'rp-bilhete rp-bilhete--' + canto;
     bilhete.setAttribute('aria-label', 'Bilhete dourado: clique para pegar o cupom do dia');
     bilhete.innerHTML = SVG_BILHETE;
-    // Sem bilhete se já resgatou hoje OU se o serviço de hoje já foi ganho no mês
+    // Sem bilhete se já resgatou hoje OU se o serviço de hoje já foi ganho na campanha
     let bilheteAtivo = !lerResgate() && !jaGanhouServico;
 
     function posicionarBilhete() {
@@ -2824,7 +2825,7 @@
        Compartilha o LINK da página (não o PDF): o amigo precisa jogar
        e achar o próprio bilhete. Mais gente procurando = mais carros na loja. */
     const TEXTO_DESAFIO = 'Achei o cupom de desconto escondido no site da Roma Pneus! ' +
-      'Todo dia de novembro tem um bilhete dourado num lugar diferente da página. ' +
+      'Todo dia, até 30/11, tem um bilhete dourado num lugar diferente da página. ' +
       'Duvido você achar o de hoje: ';
     function linkDaPagina() {
       // Tira o ?previa-cacada para o amigo cair na página normal
@@ -2892,7 +2893,7 @@
     } else if (jaGanhouServico) {
       // Serviço repetido: avisa logo, para o cliente não procurar à toa
       status.textContent = 'O serviço premiado de hoje é ' + servico.nome +
-        ', que você já ganhou este mês. Volte amanhã: o prêmio pode ser outro serviço!';
+        ', que você já ganhou nesta campanha. Volte amanhã: o prêmio pode ser outro serviço!';
       status.classList.add('is-achado');
       btnDica.hidden = true;
       document.getElementById('rpCacadaServico').textContent = servico.nome;
