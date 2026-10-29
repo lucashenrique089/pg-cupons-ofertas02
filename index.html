@@ -1,0 +1,3086 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+<style>
+/* ============================================================
+   ROMA PNEUS — PÁGINA DE CUPONS
+   Todas as classes usam prefixo .rp- para evitar colisão
+   com o CSS do tema Magento quando a página for portada.
+   ============================================================ */
+
+.rp-page {
+  --rp-azul: #0B1D45;
+  --rp-azul-2: #162B5C;
+  --rp-amarelo: #FBBD00;
+  --rp-vermelho: #C62828;
+  --rp-vermelho-hover: #9E1C1C;
+  --rp-cinza-bg: #F4F5F8;
+  --rp-borda: #E2E6EC;
+  --rp-texto: #1F2937;
+  --rp-texto-fraco: #6B7280;
+  --rp-zap: #25D366;
+  --rp-branco: #ffffff;
+  --rp-contexto-h: 52px; /* recalculado via JS */
+
+  background-color: var(--rp-cinza-bg);
+  color: var(--rp-texto);
+  line-height: 1.5;
+  overflow-x: hidden;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.rp-page *,
+.rp-page *::before,
+.rp-page *::after { box-sizing: border-box; }
+
+/* Reset de espacamento com especificidade BAIXA (0,1,0) para nao
+   atropelar as classes dos componentes nem a fonte dos icones. */
+.rp-page :where(h1, h2, h3, h4, p, figure, ul, ol) { margin: 0; padding: 0; }
+.rp-page :where(ul, ol) { list-style: none; }
+
+/* A fonte e herdada a partir de .rp-page. Botoes, selects e inputs nao
+   herdam fonte por padrao, entao sao os unicos que precisam do inherit.
+   Os icones ficam de fora e mantem a fonte Material. */
+.rp-page :where(button, select, input, textarea) { font: inherit; }
+.rp-page .material-icons-outlined { font-family: 'Material Icons Outlined'; }
+
+/* ---------- BARRA DE CONTEXTO ---------- */
+.rp-contexto {
+  background-color: var(--rp-azul);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  padding: 10px 20px;
+  color: var(--rp-branco);
+  font-size: .85rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.rp-contexto-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 12px;
+}
+.rp-contexto-lado { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rp-marca {
+  font-weight: 800; color: var(--rp-amarelo);
+  letter-spacing: .5px; font-size: .95rem;
+}
+.rp-logo {
+  height: 32px; max-width: 140px;
+  object-fit: contain;
+  display: block;
+}
+.rp-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.1);
+  padding: 6px 14px; border-radius: 20px;
+  font-weight: 600; cursor: pointer;
+  border: 1px solid rgba(255,255,255,.15);
+  transition: .2s; color: var(--rp-branco);
+  text-decoration: none; font-size: .85rem;
+}
+.rp-pill:hover { background: rgba(255,255,255,.2); }
+.rp-pill .material-icons-outlined { font-size: 1.1rem; color: var(--rp-amarelo); }
+.rp-pill.is-ativo {
+  background: var(--rp-amarelo); color: var(--rp-azul);
+  border-color: var(--rp-amarelo);
+}
+.rp-pill.is-ativo .material-icons-outlined { color: var(--rp-azul); }
+
+.rp-btn-zap {
+  background-color: var(--rp-zap); color: var(--rp-branco);
+  text-decoration: none; padding: 6px 14px; border-radius: 20px;
+  font-weight: 700; display: inline-flex; align-items: center;
+  gap: 6px; transition: .2s; font-size: .85rem;
+}
+.rp-btn-zap:hover { filter: brightness(.95); }
+
+/* ---------- HERO ---------- */
+.rp-hero {
+  background:
+    radial-gradient(900px 300px at 50% 0%, rgba(251,189,0,.10), transparent 70%),
+    linear-gradient(180deg, var(--rp-azul) 0%, var(--rp-azul-2) 100%);
+  color: var(--rp-branco);
+  padding: 64px 20px 56px;
+  text-align: center;
+}
+.rp-hero-badge {
+  display: inline-block; background: var(--rp-amarelo);
+  color: var(--rp-azul); font-weight: 800; font-size: .75rem;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  padding: 6px 16px; border-radius: 30px; margin-bottom: 16px;
+}
+.rp-hero h1 {
+  font-size: 2.6rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: -.5px; margin-bottom: 12px;
+}
+.rp-hero p { font-size: 1.1rem; color: #D1D5DB; max-width: 650px; margin: 0 auto; }
+
+/* ---------- ABAS DE CATEGORIA ---------- */
+.rp-abas-wrap {
+  background: var(--rp-branco);
+  border-bottom: 1px solid var(--rp-borda);
+  position: sticky;
+  top: var(--rp-contexto-h);
+  z-index: 40;
+  box-shadow: 0 4px 10px rgba(0,0,0,.03);
+}
+.rp-abas {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; gap: 6px; padding: 12px 20px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.rp-abas::-webkit-scrollbar { display: none; }
+.rp-aba {
+  background: transparent; border: 2px solid transparent;
+  padding: 10px 18px; border-radius: 30px;
+  font-weight: 700; font-size: .85rem; color: var(--rp-texto);
+  cursor: pointer; white-space: nowrap; text-transform: uppercase;
+  letter-spacing: .5px; transition: all .2s;
+}
+.rp-aba:hover { background-color: var(--rp-cinza-bg); }
+.rp-aba.is-ativo {
+  background-color: var(--rp-azul); color: var(--rp-branco);
+  border-color: var(--rp-azul);
+}
+.rp-aba-contador {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding: 0 6px; margin-left: 8px;
+  background: rgba(11,29,69,.08); border-radius: 10px;
+  font-weight: 800; font-size: .7rem; line-height: 1;
+}
+.rp-aba.is-ativo .rp-aba-contador { background: rgba(255,255,255,.22); }
+
+/* ---------- ÁREA PRINCIPAL ---------- */
+.rp-main { max-width: 1200px; margin: 32px auto 60px; padding: 0 20px; }
+
+.rp-filtro-ativo {
+  display: none; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: #FFF8E1; border: 1px solid var(--rp-amarelo);
+  border-radius: 12px; padding: 12px 18px; margin-bottom: 22px;
+}
+.rp-filtro-ativo.is-visivel { display: flex; }
+.rp-filtro-ativo .material-icons-outlined { color: var(--rp-azul); }
+.rp-filtro-ativo-texto { font-size: .9rem; font-weight: 700; color: var(--rp-azul); }
+.rp-btn-limpar {
+  margin-left: auto; background: transparent; border: none;
+  color: var(--rp-vermelho); font-weight: 800; font-size: .8rem;
+  cursor: pointer; text-transform: uppercase; letter-spacing: .5px;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.rp-btn-limpar:hover { text-decoration: underline; }
+
+.rp-sec-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 25px; flex-wrap: wrap; gap: 10px;
+}
+.rp-sec-head h2 {
+  font-size: 1.4rem; font-weight: 800;
+  color: var(--rp-azul); text-transform: uppercase;
+}
+.rp-sec-head span { color: var(--rp-texto-fraco); font-size: .9rem; font-weight: 600; }
+
+/* ---------- GRID E CARDS ---------- */
+.rp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 24px;
+}
+.rp-card {
+  background: var(--rp-branco); border: 1px solid var(--rp-borda);
+  border-radius: 16px; display: flex; flex-direction: column;
+  overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,.04);
+  transition: transform .25s, box-shadow .25s; position: relative;
+}
+.rp-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,.08);
+  border-color: #CBD5E1;
+}
+.rp-card-head {
+  height: 180px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F1F4F9 100%);
+  border-bottom: 1px solid var(--rp-borda);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; position: relative; overflow: hidden;
+}
+.rp-card-head img {
+  max-width: 100%; max-height: 130px; object-fit: contain;
+  transition: transform .3s ease;
+}
+.rp-card:hover .rp-card-head img { transform: scale(1.06); }
+.rp-card-tag {
+  position: absolute; top: 12px; left: 12px;
+  background: rgba(11,29,69,.85); color: var(--rp-branco);
+  font-size: .65rem; font-weight: 800; padding: 4px 8px;
+  border-radius: 4px; text-transform: uppercase; letter-spacing: .5px;
+}
+.rp-card-selo {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--rp-amarelo); color: var(--rp-azul);
+  font-size: .62rem; font-weight: 900; padding: 4px 8px;
+  border-radius: 4px; text-transform: uppercase; letter-spacing: .5px;
+}
+.rp-card-body {
+  padding: 22px 20px 16px; display: flex;
+  flex-direction: column; flex-grow: 1;
+}
+.rp-prefixo {
+  font-size: .9rem; font-weight: 900; color: var(--rp-azul);
+  text-transform: uppercase; line-height: 1.1;
+}
+.rp-valor {
+  font-size: 2.3rem; font-weight: 900; color: var(--rp-vermelho);
+  line-height: 1; margin: 4px 0 14px; letter-spacing: -1px;
+}
+.rp-desc {
+  font-size: .88rem; color: #374151; font-weight: 600;
+  line-height: 1.4; margin-bottom: 16px; flex-grow: 1;
+}
+.rp-regras {
+  font-size: .72rem; color: var(--rp-texto-fraco);
+  border-top: 1px dashed var(--rp-borda);
+  padding-top: 10px; margin-bottom: 0;
+}
+.rp-card-foot { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+.rp-card-instrucao {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .8rem; font-weight: 700; color: var(--rp-azul);
+  background: #FFF8E1; border: 1px solid #FBBD00;
+  padding: 12px 14px; border-radius: 10px;
+  margin-bottom: 12px; line-height: 1.4;
+}
+.rp-card-instrucao .material-icons-outlined {
+  font-size: 1.2rem; flex-shrink: 0; color: var(--rp-amarelo);
+}
+.rp-btn-acao {
+  background-color: var(--rp-vermelho); color: var(--rp-branco);
+  text-decoration: none; padding: 12px; border-radius: 30px;
+  font-size: .88rem; font-weight: 800; text-align: center;
+  text-transform: uppercase; letter-spacing: .5px;
+  transition: .2s; display: block;
+}
+.rp-btn-acao:hover { background-color: var(--rp-vermelho-hover); }
+
+/* ---------- ESTADO VAZIO ---------- */
+.rp-vazio {
+  display: none; text-align: center; padding: 60px 20px;
+  background: var(--rp-branco); border: 1px dashed var(--rp-borda);
+  border-radius: 16px;
+}
+.rp-vazio.is-visivel { display: block; }
+.rp-vazio .material-icons-outlined {
+  font-size: 3rem; color: var(--rp-texto-fraco); margin-bottom: 12px;
+}
+.rp-vazio h3 { font-size: 1.2rem; font-weight: 800; color: var(--rp-azul); margin-bottom: 8px; }
+.rp-vazio p { color: var(--rp-texto-fraco); font-size: .9rem; margin-bottom: 20px; }
+.rp-vazio button {
+  background: var(--rp-azul); color: var(--rp-branco); border: none;
+  padding: 12px 26px; border-radius: 30px; font-weight: 800;
+  font-size: .85rem; cursor: pointer; text-transform: uppercase;
+}
+
+/* ---------- BANNER PARCELAMENTO ---------- */
+.rp-banner {
+  background: linear-gradient(90deg, #0B1D45 0%, #162B5C 100%);
+  color: var(--rp-branco); border-radius: 16px;
+  padding: 35px 30px; margin: 50px auto 0;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 20px; border: 2px solid var(--rp-amarelo);
+}
+.rp-banner h3 { font-size: 1.4rem; font-weight: 900; color: var(--rp-amarelo); margin-bottom: 6px; }
+.rp-banner p { font-size: .95rem; color: #E5E7EB; max-width: 650px; }
+.rp-btn-banner {
+  background: var(--rp-amarelo); color: var(--rp-azul);
+  padding: 14px 28px; border-radius: 30px; font-weight: 900;
+  text-decoration: none; text-transform: uppercase;
+  font-size: .9rem; transition: .2s;
+}
+.rp-btn-banner:hover { transform: scale(1.03); filter: brightness(1.05); }
+
+/* ---------- DRAWER ---------- */
+.rp-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+  z-index: 999; opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.rp-overlay.is-aberto { opacity: 1; pointer-events: auto; }
+.rp-drawer {
+  position: fixed; top: 0; right: -480px;
+  width: 100%; max-width: 440px; height: 100vh;
+  background: var(--rp-branco); z-index: 1000;
+  box-shadow: -5px 0 25px rgba(0,0,0,.2);
+  transition: right .35s cubic-bezier(.16,1,.3,1);
+  display: flex; flex-direction: column;
+}
+.rp-overlay.is-aberto .rp-drawer { right: 0; }
+.rp-drawer-head {
+  padding: 20px 24px; border-bottom: 1px solid var(--rp-borda);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.rp-drawer-head h3 { font-size: 1.2rem; font-weight: 800; color: var(--rp-azul); }
+.rp-btn-fechar {
+  background: transparent; border: none; cursor: pointer;
+  font-size: 1.6rem; color: var(--rp-texto-fraco);
+  line-height: 1; display: flex; align-items: center;
+}
+.rp-drawer-abas {
+  display: flex; background: #F1F5F9; padding: 4px;
+  margin: 15px 24px; border-radius: 10px;
+}
+.rp-drawer-aba {
+  flex: 1; padding: 10px; border: none; border-radius: 8px;
+  font-size: .82rem; font-weight: 800; cursor: pointer;
+  background: transparent; color: var(--rp-texto-fraco); transition: .2s;
+}
+.rp-drawer-aba.is-ativo { background: var(--rp-vermelho); color: var(--rp-branco); }
+.rp-drawer-body { padding: 10px 24px 24px; flex-grow: 1; overflow-y: auto; }
+.rp-passo {
+  background: var(--rp-branco); border: 1px solid var(--rp-borda);
+  border-radius: 12px; padding: 16px; margin-bottom: 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.rp-passo-label {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: .85rem; color: var(--rp-azul);
+  text-transform: uppercase;
+}
+.rp-passo-num {
+  width: 24px; height: 24px; background-color: var(--rp-vermelho);
+  color: var(--rp-branco); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; flex-shrink: 0;
+}
+.rp-passo select {
+  width: 100%; padding: 12px; border-radius: 8px;
+  border: 1px solid #CBD5E1; background-color: #FAFAFA;
+  font-size: .9rem; font-weight: 600; color: var(--rp-texto);
+  outline: none; cursor: pointer;
+}
+.rp-passo select:disabled { opacity: .5; cursor: not-allowed; }
+.rp-drawer-foot { padding: 16px 24px; border-top: 1px solid var(--rp-borda); }
+.rp-btn-aplicar {
+  width: 100%; padding: 14px; background: var(--rp-vermelho);
+  color: var(--rp-branco); border: none; border-radius: 30px;
+  font-size: .95rem; font-weight: 800; text-transform: uppercase;
+  cursor: pointer; transition: .2s;
+}
+.rp-btn-aplicar:hover { background: var(--rp-vermelho-hover); }
+.rp-btn-aplicar:disabled { background: #CBD5E1; cursor: not-allowed; }
+
+
+/* ---------- PAINEL DE RESULTADO DA BUSCA ---------- */
+.rp-resultado {
+  display: none;
+  background: var(--rp-branco);
+  border: 1px solid var(--rp-borda);
+  border-left: 5px solid var(--rp-amarelo);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 26px;
+  box-shadow: 0 6px 18px rgba(11,29,69,.06);
+}
+.rp-resultado.is-visivel { display: block; }
+
+.rp-res-topo {
+  display: flex; align-items: flex-start; gap: 16px;
+  flex-wrap: wrap; padding-bottom: 18px;
+  border-bottom: 1px solid var(--rp-borda);
+}
+.rp-res-icone {
+  width: 46px; height: 46px; flex-shrink: 0;
+  background: var(--rp-azul); color: var(--rp-amarelo);
+  border-radius: 12px; display: flex;
+  align-items: center; justify-content: center;
+}
+.rp-res-info { flex: 1; min-width: 220px; }
+.rp-res-eyebrow {
+  font-size: .7rem; font-weight: 800; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--rp-texto-fraco);
+}
+.rp-res-veiculo {
+  font-size: 1.25rem; font-weight: 900;
+  color: var(--rp-azul); line-height: 1.2;
+}
+.rp-res-porte {
+  display: inline-block; margin-top: 6px;
+  background: rgba(11,29,69,.07); color: var(--rp-azul);
+  font-size: .7rem; font-weight: 800; letter-spacing: .5px;
+  padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
+}
+.rp-btn-trocar {
+  background: transparent; border: 1px solid #CBD5E1;
+  color: var(--rp-azul); padding: 8px 16px; border-radius: 30px;
+  font-size: .78rem; font-weight: 800; cursor: pointer;
+  text-transform: uppercase; letter-spacing: .5px; transition: .2s;
+}
+.rp-btn-trocar:hover { border-color: var(--rp-azul); background: var(--rp-cinza-bg); }
+
+.rp-res-medidas { padding: 18px 0 0; }
+.rp-res-label {
+  font-size: .75rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--rp-texto-fraco); margin-bottom: 10px;
+}
+.rp-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.rp-chip {
+  background: var(--rp-cinza-bg); border: 2px solid transparent;
+  color: var(--rp-azul); padding: 9px 16px; border-radius: 10px;
+  font-size: .9rem; font-weight: 800; cursor: pointer;
+  font-variant-numeric: tabular-nums; transition: .2s;
+}
+.rp-chip:hover { border-color: #CBD5E1; }
+.rp-chip.is-ativo {
+  background: var(--rp-azul); color: var(--rp-branco);
+  border-color: var(--rp-azul);
+}
+.rp-res-nota {
+  margin-top: 14px; font-size: .8rem; color: var(--rp-texto-fraco);
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.rp-res-nota .material-icons-outlined { font-size: 1rem; color: var(--rp-amarelo); }
+
+.rp-res-acoes {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 18px; padding-top: 18px;
+  border-top: 1px dashed var(--rp-borda);
+}
+.rp-btn-vitrine {
+  background: var(--rp-azul); color: var(--rp-branco);
+  text-decoration: none; padding: 13px 24px; border-radius: 30px;
+  font-size: .85rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .5px; display: inline-flex; align-items: center;
+  gap: 8px; transition: .2s;
+}
+.rp-btn-vitrine:hover { background: var(--rp-azul-2); }
+.rp-btn-cotar {
+  background: var(--rp-zap); color: var(--rp-branco);
+  text-decoration: none; padding: 13px 24px; border-radius: 30px;
+  font-size: .85rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .5px; display: inline-flex; align-items: center;
+  gap: 8px; transition: .2s;
+}
+.rp-btn-cotar:hover { filter: brightness(.95); }
+
+.rp-compat {
+  margin-top: 14px; font-size: .82rem; color: #374151;
+  background: #F8FAFC; border-radius: 10px; padding: 12px 14px;
+}
+.rp-compat strong { color: var(--rp-azul); }
+
+/* ---------- BUSCA DENTRO DO DRAWER ---------- */
+.rp-busca {
+  position: relative; margin-bottom: 14px;
+}
+.rp-busca input {
+  width: 100%; padding: 13px 14px 13px 42px;
+  border: 1px solid #CBD5E1; border-radius: 10px;
+  font-size: .92rem; font-weight: 600; outline: none;
+  background: #FAFAFA;
+}
+.rp-busca input:focus { border-color: var(--rp-azul); background: var(--rp-branco); }
+.rp-busca .material-icons-outlined {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--rp-texto-fraco); font-size: 1.2rem; pointer-events: none;
+}
+.rp-sugestoes {
+  margin-top: 8px; border: 1px solid var(--rp-borda);
+  border-radius: 10px; max-height: 260px; overflow-y: auto;
+  display: none;
+}
+.rp-sugestoes.is-visivel { display: block; }
+.rp-sugestao {
+  padding: 11px 14px; cursor: pointer; font-size: .88rem;
+  border-bottom: 1px solid #F1F5F9; display: flex;
+  justify-content: space-between; gap: 10px; align-items: center;
+}
+.rp-sugestao:last-child { border-bottom: none; }
+.rp-sugestao:hover { background: var(--rp-cinza-bg); }
+.rp-sugestao-nome { font-weight: 700; color: var(--rp-azul); }
+.rp-sugestao-qtd {
+  font-size: .72rem; color: var(--rp-texto-fraco);
+  font-weight: 700; white-space: nowrap;
+}
+.rp-sugestao-vazio {
+  padding: 16px 14px; font-size: .85rem;
+  color: var(--rp-texto-fraco); text-align: center;
+}
+.rp-divisor {
+  text-align: center; font-size: .72rem; font-weight: 800;
+  color: var(--rp-texto-fraco); text-transform: uppercase;
+  letter-spacing: 1px; margin: 4px 0 14px;
+}
+
+@media (max-width: 768px) {
+  .rp-hero h1 { font-size: 1.8rem; }
+  .rp-banner { flex-direction: column; text-align: center; }
+  .rp-drawer { max-width: 100%; }
+  .rp-contexto-inner { justify-content: center; }
+}
+
+/* ============================================================
+   NOVO — CUPOM ROMA5 (compra no site) e CAÇA AO CUPOM
+   ============================================================ */
+
+/* Link do hero para a caça ao cupom */
+.rp-hero-cacada {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 22px; padding: 10px 20px; border-radius: 30px;
+  border: 1px solid rgba(251,189,0,.6); color: var(--rp-amarelo);
+  font-weight: 800; font-size: .85rem; text-decoration: none;
+  transition: .2s;
+}
+.rp-hero-cacada[hidden] { display: none; }
+.rp-hero-cacada:hover { background: rgba(251,189,0,.12); }
+.rp-hero-cacada .material-icons-outlined { font-size: 1.15rem; }
+
+/* Botão copiar dentro da instrução do card (usado pelo ROMA5) */
+.rp-btn-copiar {
+  margin-left: auto; flex-shrink: 0;
+  background: var(--rp-azul); color: var(--rp-amarelo);
+  border: none; border-radius: 20px; padding: 6px 12px;
+  font-size: .72rem; font-weight: 800; cursor: pointer;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.rp-btn-copiar:hover { background: var(--rp-azul-2); }
+.rp-btn-acao.is-site { background-color: var(--rp-azul); }
+.rp-btn-acao.is-site:hover { background-color: var(--rp-azul-2); }
+
+/* Seção da caça ao cupom */
+.rp-cacada {
+  margin: 50px auto 0; background: var(--rp-branco);
+  border: 1px solid var(--rp-borda); border-top: 5px solid var(--rp-amarelo);
+  border-radius: 16px; padding: 36px 30px; text-align: center;
+  box-shadow: 0 6px 18px rgba(11,29,69,.06);
+  scroll-margin-top: 140px;
+}
+.rp-cacada-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--rp-azul); color: var(--rp-amarelo);
+  font-size: .75rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; padding: 6px 14px; border-radius: 30px; margin-bottom: 14px;
+}
+.rp-cacada-badge .material-icons-outlined { font-size: 1rem; }
+.rp-cacada h2 {
+  font-size: 1.6rem; font-weight: 900; color: var(--rp-azul);
+  text-transform: uppercase; line-height: 1.2; margin-bottom: 10px;
+}
+.rp-cacada-lead { color: var(--rp-texto-fraco); max-width: 640px; margin: 0 auto 26px; }
+.rp-cacada-passos {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  text-align: left; margin-bottom: 26px;
+}
+.rp-cacada-passos li {
+  background: var(--rp-cinza-bg); border-radius: 12px; padding: 18px;
+  font-size: .85rem; color: var(--rp-texto-fraco); line-height: 1.45;
+}
+.rp-cacada-passos strong { display: block; color: var(--rp-azul); font-size: .92rem; margin: 8px 0 4px; }
+.rp-cacada-hoje {
+  display: flex; justify-content: center; align-items: stretch;
+  gap: 14px; flex-wrap: wrap; margin-bottom: 18px;
+}
+.rp-cacada-box {
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  background: #FFF8E1; border: 1px dashed var(--rp-azul);
+  border-radius: 12px; padding: 12px 22px; min-width: 220px;
+}
+.rp-cacada-box strong { font-size: 1.15rem; font-weight: 900; color: var(--rp-azul); text-transform: uppercase; }
+.rp-cacada-box svg { width: 52px; height: 38px; margin: 0 auto; filter: drop-shadow(0 3px 5px rgba(0,0,0,.25)); }
+.rp-cacada-status { font-weight: 700; color: var(--rp-azul); margin-bottom: 16px; }
+.rp-cacada-status.is-achado { color: #128C4B; }
+.rp-btn-dica {
+  background: transparent; border: 2px solid var(--rp-azul); color: var(--rp-azul);
+  padding: 11px 26px; border-radius: 30px; font-weight: 800; font-size: .85rem;
+  text-transform: uppercase; letter-spacing: .5px; cursor: pointer; transition: .2s;
+}
+.rp-btn-dica:hover { background: var(--rp-azul); color: var(--rp-amarelo); }
+.rp-btn-agendar {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--rp-zap); color: var(--rp-branco); text-decoration: none;
+  padding: 13px 26px; border-radius: 30px; font-weight: 800; font-size: .88rem;
+  text-transform: uppercase; letter-spacing: .5px; margin: 12px 6px 0; transition: .2s;
+}
+.rp-btn-agendar:hover { filter: brightness(.95); }
+.rp-btn-agendar[hidden] { display: none; }
+.rp-modal-box .rp-btn-agendar { width: 100%; margin: 8px 0 0; }
+.rp-btn-compartilhar {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: transparent; color: var(--rp-azul); border: 2px solid var(--rp-azul); cursor: pointer;
+  padding: 12px 26px; border-radius: 30px; font-weight: 800; font-size: .85rem;
+  text-transform: uppercase; letter-spacing: .5px; margin-top: 12px; transition: .2s;
+}
+.rp-btn-compartilhar:hover { background: var(--rp-azul); color: var(--rp-amarelo); }
+.rp-btn-compartilhar[hidden] { display: none; }
+.rp-modal-box .rp-btn-compartilhar { width: 100%; }
+.rp-cacada-dica {
+  margin: 14px auto 0; max-width: 520px; background: #FFF8E1;
+  border-radius: 10px; padding: 12px 16px; font-weight: 700; color: var(--rp-azul);
+}
+.rp-cacada-dica[hidden] { display: none; }
+.rp-cacada-regras { margin-top: 22px; font-size: .75rem; color: var(--rp-texto-fraco); max-width: 680px; margin-left: auto; margin-right: auto; }
+
+/* Bilhete dourado (o script coloca no esconderijo do dia) */
+.rp-tem-bilhete { position: relative; }
+.rp-bilhete {
+  position: absolute; z-index: 6; width: 46px; height: 34px;
+  padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.35));
+  animation: rpBilheteBalanco 4s ease-in-out infinite;
+}
+.rp-bilhete svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+.rp-bilhete:hover { animation: none; transform: scale(1.15) rotate(-6deg); }
+.rp-bilhete--0 { top: 12px; left: 12px; }
+.rp-bilhete--1 { top: 12px; right: 12px; }
+.rp-bilhete--2 { bottom: 12px; left: 12px; }
+.rp-bilhete--3 { bottom: 12px; right: 12px; }
+@keyframes rpBilheteBalanco {
+  0%, 80%, 100% { transform: rotate(0deg); }
+  85% { transform: rotate(-12deg); }
+  90% { transform: rotate(10deg); }
+  95% { transform: rotate(-6deg); }
+}
+
+/* Pop-up do cupom */
+.rp-modal { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.rp-modal[hidden] { display: none; }
+.rp-modal-fundo { position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: rgba(11,29,69,.8); backdrop-filter: blur(3px); }
+.rp-modal-box {
+  position: relative; width: 100%; max-width: 430px; max-height: calc(100vh - 40px); overflow-y: auto;
+  background: var(--rp-branco); border-radius: 18px; border-top: 6px solid var(--rp-amarelo);
+  padding: 34px 26px 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,.4);
+}
+.rp-modal-box:focus { outline: none; }
+.rp-modal-box .rp-btn-fechar { position: absolute; top: 10px; right: 12px; }
+.rp-modal-icone { width: 76px; height: 54px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.25)); }
+.rp-modal-box h3 { font-size: 1.35rem; font-weight: 900; color: var(--rp-azul); text-transform: uppercase; margin: 10px 0 6px; }
+.rp-modal-texto { color: var(--rp-texto-fraco); font-size: .92rem; }
+.rp-modal-codigo {
+  margin: 16px 0; padding: 14px; border: 2px dashed var(--rp-azul); border-radius: 12px;
+  background: #FFF8E1; color: var(--rp-azul); font-size: 1.35rem; font-weight: 900;
+  letter-spacing: 1.5px; word-break: break-word;
+}
+.rp-modal-label { display: block; text-align: left; font-size: .78rem; font-weight: 800; color: var(--rp-azul); text-transform: uppercase; margin-bottom: 6px; }
+.rp-modal-select {
+  width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #CBD5E1;
+  background: #FAFAFA; font-size: .92rem; font-weight: 600; color: var(--rp-texto);
+  outline: none; cursor: pointer; margin-bottom: 12px;
+}
+.rp-modal-select:focus { border-color: var(--rp-azul); background: var(--rp-branco); }
+.rp-modal-alerta {
+  display: flex; gap: 8px; align-items: flex-start; text-align: left;
+  font-size: .8rem; color: var(--rp-azul); background: #FFF8E1;
+  border-radius: 10px; padding: 10px 12px; margin-bottom: 14px;
+}
+.rp-modal-alerta .material-icons-outlined { font-size: 1.1rem; color: var(--rp-amarelo); flex-shrink: 0; }
+.rp-cacada-periodo {
+  display: inline-block; background: var(--rp-azul); color: var(--rp-amarelo);
+  font-weight: 800; border-radius: 10px; padding: 10px 18px; margin: -10px auto 22px;
+}
+.rp-cacada-periodo[hidden] { display: none; }
+.rp-btn-pdf {
+  width: 100%; padding: 14px; border: none; border-radius: 30px; cursor: pointer;
+  background: var(--rp-vermelho); color: var(--rp-branco);
+  font-size: .9rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: .2s;
+}
+.rp-btn-pdf:hover { background: var(--rp-vermelho-hover); }
+.rp-btn-pdf:disabled { background: #CBD5E1; cursor: wait; }
+.rp-modal-aviso { min-height: 1.4em; margin-top: 10px; font-size: .85rem; font-weight: 700; color: var(--rp-azul); }
+.rp-modal-rodape { margin-top: 6px; font-size: .75rem; color: var(--rp-texto-fraco); }
+
+/* Cards de serviço (sem preço) */
+.rp-titulo {
+  font-size: 1.45rem; font-weight: 900; color: var(--rp-azul);
+  line-height: 1.15; margin: 4px 0 12px; text-transform: uppercase;
+}
+.rp-card-cacada { text-decoration: none; transition: .2s; }
+.rp-card-cacada:hover { background: #FFEFB8; }
+.rp-cacada-sub { font-size: .75rem; font-weight: 600; color: var(--rp-texto-fraco); }
+
+/* Pop-up de convite */
+.rp-convite-bilhete {
+  display: flex; align-items: center; gap: 12px; text-align: left;
+  background: #FFF8E1; border: 1px dashed var(--rp-azul); border-radius: 12px;
+  padding: 12px 14px; margin: 16px 0 18px; font-size: .85rem; color: var(--rp-azul);
+}
+.rp-convite-bilhete .rp-modal-icone { width: 54px; height: 40px; flex-shrink: 0; }
+.rp-convite-link {
+  display: inline-block; margin-top: 12px; font-size: .8rem; font-weight: 800;
+  color: var(--rp-azul); text-transform: uppercase; letter-spacing: .5px;
+}
+
+@media (max-width: 768px) {
+  .rp-cacada { padding: 28px 18px; }
+  .rp-cacada h2 { font-size: 1.25rem; }
+  .rp-cacada-passos { grid-template-columns: 1fr; }
+  .rp-btn-dica { width: 100%; }
+  .rp-bilhete { width: 40px; height: 30px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rp-bilhete { animation: none; }
+}
+</style>
+
+<div class="rp-page">
+
+  <!-- ============ BARRA DE CONTEXTO ============ -->
+  <div class="rp-contexto" id="rpContexto">
+    <div class="rp-contexto-inner">
+      <div class="rp-contexto-lado">
+        <!-- Lucas: atribuir aqui o caminho da logo do banco de mídia do Magento -->
+        <img src="logo-red.png" alt="Roma Pneus - Pneus e Serviços Automotivos" class="rp-logo">
+        <a class="rp-pill" href="https://romapneus.com.br/filiais" target="_blank" rel="noopener">
+          <span class="material-icons-outlined">storefront</span>
+          <span>13 Lojas em SP (1 Truck Center)</span>
+        </a>
+      </div>
+      <div class="rp-contexto-lado">
+        <button class="rp-pill" id="rpAbrirDrawer" type="button">
+          <span class="material-icons-outlined">directions_car</span>
+          <span id="rpLabelVeiculo">Adicionar Veículo</span>
+        </button>
+        <a class="rp-btn-zap" id="rpZapTopo" href="#" target="_blank" rel="noopener">
+          <span class="material-icons-outlined" style="font-size:1rem;">chat</span>
+          Televendas
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <!--
+    ESCONDERIJOS FIXOS DO BILHETE DOURADO
+    Qualquer elemento com data-esconderijo pode receber o bilhete do dia.
+    data-dica é o texto do botão "Quero uma dica". Os cards da vitrine também
+    servem de esconderijo: a lista fica em CACADA.cuponsEsconderijo, no script.
+  -->
+  <section class="rp-hero" data-esconderijo="hero" data-dica="Comece pelo começo: ele está no topo da página.">
+    <span class="rp-hero-badge">ROMA PNEUS</span>
+    <h1>Serviços &amp; Cupom do Dia</h1>
+    <p>Pneus e serviços automotivos nas nossas 13 lojas em São Paulo. Todo dia um serviço ganha desconto: ache o bilhete dourado escondido nesta página.</p>
+    <a class="rp-hero-cacada" href="#rpCacada">
+      <span class="material-icons-outlined">confirmation_number</span>
+      Novo: caça ao cupom do dia
+    </a>
+  </section>
+
+  <!-- ============ ABAS DE CATEGORIA ============ -->
+  <div class="rp-abas-wrap">
+    <div class="rp-abas" id="rpAbas"><!-- gerado via JS --></div>
+  </div>
+
+  <!-- ============ CONTEÚDO ============ -->
+  <main class="rp-main">
+
+    <div class="rp-filtro-ativo" id="rpFiltroAtivo">
+      <span class="material-icons-outlined">directions_car</span>
+      <span class="rp-filtro-ativo-texto" id="rpFiltroAtivoTexto"></span>
+      <button class="rp-btn-limpar" id="rpLimparFiltro" type="button">
+        <span class="material-icons-outlined" style="font-size:1rem;">close</span>
+        Remover filtro
+      </button>
+    </div>
+
+
+    <section class="rp-resultado" id="rpResultado" aria-live="polite">
+      <div class="rp-res-topo">
+        <div class="rp-res-icone"><span class="material-icons-outlined">directions_car</span></div>
+        <div class="rp-res-info">
+          <div class="rp-res-eyebrow">Veículo identificado</div>
+          <div class="rp-res-veiculo" id="rpResVeiculo"></div>
+          <span class="rp-res-porte" id="rpResPorte"></span>
+        </div>
+        <button class="rp-btn-trocar" type="button" id="rpTrocarVeiculo">Trocar</button>
+      </div>
+
+      <div class="rp-res-medidas">
+        <div class="rp-res-label" id="rpResLabelMedidas">Medidas homologadas Goodyear</div>
+        <div class="rp-chips" id="rpResChips"></div>
+        <div class="rp-res-nota" id="rpResNota"></div>
+        <div class="rp-compat" id="rpResCompat" style="display:none;"></div>
+      </div>
+
+      <div class="rp-res-acoes">
+        <a class="rp-btn-vitrine" id="rpBtnVitrine" href="#" target="_blank" rel="noopener">
+          <span class="material-icons-outlined" style="font-size:1.1rem;">search</span>
+          Ver pneus dessa medida
+        </a>
+        <a class="rp-btn-cotar" id="rpBtnCotar" href="#" target="_blank" rel="noopener">
+          <span class="material-icons-outlined" style="font-size:1.1rem;">chat</span>
+          Cotar com desconto
+        </a>
+      </div>
+    </section>
+
+    <div class="rp-sec-head">
+      <h2 id="rpTituloSecao">Pneus &amp; Serviços</h2>
+      <span id="rpContador"></span>
+    </div>
+
+    <div class="rp-grid" id="rpGrid"><!-- gerado via JS --></div>
+
+    <div class="rp-vazio" id="rpVazio">
+      <span class="material-icons-outlined">search_off</span>
+      <h3>Nada encontrado para essa combinação</h3>
+      <p>Tente outra categoria ou remova o filtro de veículo para ver todos os serviços.</p>
+      <button type="button" id="rpVerTudo">Ver tudo</button>
+    </div>
+
+    <!-- ============ CAÇA AO CUPOM ============ -->
+    <!--
+      >>> AJUSTAR <<< Demonstração para apresentar ao gestor.
+      Serviços, desconto e regras ficam no objeto CACADA, no script.
+    -->
+    <section class="rp-cacada" id="rpCacada">
+      <span class="rp-cacada-badge"><span class="material-icons-outlined">confirmation_number</span> Novo · Caça ao cupom</span>
+      <h2>Ache o bilhete dourado e ganhe <span data-cacada="desconto">10%</span> em um serviço</h2>
+      <p class="rp-cacada-lead">Durante todo o mês de novembro, à meia-noite, o bilhete muda de lugar nesta página e o serviço premiado também muda. Encontre o bilhete e garanta o desconto na loja.</p>
+      <p class="rp-cacada-periodo" id="rpCacadaPeriodo" hidden></p>
+
+      <ol class="rp-cacada-passos">
+        <li><span class="rp-passo-num">1</span><strong>Encontre o bilhete</strong>Ele pode estar em qualquer lugar da página, inclusive dentro de um card de serviço.</li>
+        <li><span class="rp-passo-num">2</span><strong>Escolha a sua loja</strong>Selecione uma das 13 lojas. O nome e o endereço saem impressos no cupom.</li>
+        <li><span class="rp-passo-num">3</span><strong>Apresente o PDF</strong>Agende pelo WhatsApp e use o cupom na loja escolhida até 30/11.</li>
+      </ol>
+
+      <div class="rp-cacada-hoje">
+        <div class="rp-cacada-box">
+          <span class="rp-res-eyebrow">Serviço premiado hoje</span>
+          <strong id="rpCacadaServico">Surpresa!</strong>
+          <span class="rp-cacada-sub" id="rpCacadaServicoSub">Descubra ao achar o bilhete</span>
+        </div>
+        <div class="rp-cacada-box">
+          <span class="rp-res-eyebrow">Procure por este bilhete</span>
+          <svg viewBox="0 0 40 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3 2H37a2 2 0 0 1 2 2V10a4 4 0 0 0 0 8V24a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V18a4 4 0 0 0 0-8V4a2 2 0 0 1 2-2Z" fill="#FBBD00" stroke="#0B1D45" stroke-width="1.5"/><path d="M28 5V23" stroke="#0B1D45" stroke-width="1.2" stroke-dasharray="2 2"/><text x="14.5" y="18.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#0B1D45">%</text></svg>
+        </div>
+      </div>
+
+      <p class="rp-cacada-status" id="rpCacadaStatus" aria-live="polite">Hoje o bilhete está escondido em algum lugar desta página.</p>
+      <button type="button" class="rp-btn-dica" id="rpCacadaBtnDica" aria-expanded="false" aria-controls="rpCacadaDica">Quero uma dica</button>
+      <p class="rp-cacada-dica" id="rpCacadaDica" hidden></p>
+      <a class="rp-btn-agendar" data-agendar href="#" target="_blank" rel="noopener" hidden>
+        <span class="material-icons-outlined" style="font-size:1.1rem;">chat</span>
+        Agendar no WhatsApp
+      </a>
+      <button type="button" class="rp-btn-compartilhar" data-compartilhar="secao" hidden>
+        <span class="material-icons-outlined" style="font-size:1.1rem;">share</span>
+        Desafiar um amigo
+      </button>
+
+      <p class="rp-cacada-regras">Campanha válida de 01/11 a 30/11. Desconto de <span data-cacada="desconto">10%</span> no serviço indicado no cupom, somente na loja escolhida. O cupom vale até 30/11 e pode ser usado uma única vez. Você pode ganhar um cupom por dia, e cada serviço só uma vez no mês. Não cumulativo com outras promoções de serviço.</p>
+    </section>
+
+    <div class="rp-banner" data-esconderijo="banner" data-dica="Procure perto de onde falamos de parcelamento.">
+      <div>
+        <h3>Facilidade no Pagamento</h3>
+        <p>Compre pneus no site parcelando em até <strong>6x sem juros</strong> em todos os cartões e use o cupom <strong>ROMA5</strong> para ganhar mais 5% de desconto. E agende o seu serviço</p>
+      </div>
+      <a class="rp-btn-banner" id="rpZapBanner" href="#" target="_blank" rel="noopener">Falar com Consultor</a>
+    </div>
+
+  </main>
+
+  <!-- ============ DRAWER DE VEÍCULO ============ -->
+  <div class="rp-overlay" id="rpOverlay">
+    <aside class="rp-drawer" role="dialog" aria-modal="true" aria-label="Identifique seu veículo">
+      <div class="rp-drawer-head">
+        <h3>Identifique seu Veículo</h3>
+        <button class="rp-btn-fechar" id="rpFecharDrawer" type="button" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="rp-drawer-abas">
+        <button class="rp-drawer-aba is-ativo" id="rpAbaVeiculo" type="button">Veículo</button>
+        <button class="rp-drawer-aba" id="rpAbaMedida" type="button">Medida do Pneu</button>
+      </div>
+
+      <div class="rp-drawer-body" id="rpBodyVeiculo">
+        <div class="rp-busca">
+          <span class="material-icons-outlined">search</span>
+          <input type="text" id="rpBuscaVeiculo" placeholder="Digite o modelo: Onix, Corolla, Strada..." autocomplete="off">
+        </div>
+        <div class="rp-sugestoes" id="rpSugestoes"></div>
+        <div class="rp-divisor">ou escolha nas listas</div>
+        <div class="rp-passo">
+          <div class="rp-passo-label"><span class="rp-passo-num">1</span> Montadora</div>
+          <select id="rpSelMarca"><option value="">Selecione a Marca</option></select>
+        </div>
+        <div class="rp-passo">
+          <div class="rp-passo-label"><span class="rp-passo-num">2</span> Modelo</div>
+          <select id="rpSelModelo" disabled><option value="">Escolha a marca primeiro</option></select>
+        </div>
+      </div>
+
+      <div class="rp-drawer-body" id="rpBodyMedida" style="display:none;">
+        <div class="rp-passo">
+          <div class="rp-passo-label"><span class="rp-passo-num">1</span> Largura (mm)</div>
+          <select id="rpSelLargura"></select>
+        </div>
+        <div class="rp-passo">
+          <div class="rp-passo-label"><span class="rp-passo-num">2</span> Perfil (%)</div>
+          <select id="rpSelPerfil"></select>
+        </div>
+        <div class="rp-passo">
+          <div class="rp-passo-label"><span class="rp-passo-num">3</span> Aro (polegadas)</div>
+          <select id="rpSelAro"></select>
+        </div>
+      </div>
+
+      <div class="rp-drawer-foot">
+        <button class="rp-btn-aplicar" id="rpAplicar" type="button">Aplicar Filtro</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ============ POP-UP DE BOAS-VINDAS (convite para o jogo) ============ -->
+  <!-- Aparece 1 vez por dia, logo que a página abre. Não aparece se o cliente já achou o bilhete hoje. -->
+  <div class="rp-modal" id="rpModalConvite" hidden>
+    <div class="rp-modal-fundo" data-fechar-modal></div>
+    <div class="rp-modal-box" role="dialog" aria-modal="true" aria-labelledby="rpConviteTitulo" tabindex="-1">
+      <button class="rp-btn-fechar" type="button" data-fechar-modal aria-label="Fechar">&times;</button>
+      <span class="rp-cacada-badge"><span class="material-icons-outlined">confirmation_number</span> Caça ao cupom</span>
+      <h3 id="rpConviteTitulo">Tem um cupom escondido nesta página!</h3>
+      <p class="rp-modal-texto">Todo dia escondemos um <strong>bilhete dourado</strong> num lugar diferente da página. Quem acha ganha <strong><span data-cacada="desconto">10%</span> de desconto em um serviço</strong> nas nossas lojas. Vale todos os dias de novembro!</p>
+      <div class="rp-convite-bilhete">
+        <svg class="rp-modal-icone" viewBox="0 0 40 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3 2H37a2 2 0 0 1 2 2V10a4 4 0 0 0 0 8V24a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V18a4 4 0 0 0 0-8V4a2 2 0 0 1 2-2Z" fill="#FBBD00" stroke="#0B1D45" stroke-width="1.5"/><path d="M28 5V23" stroke="#0B1D45" stroke-width="1.2" stroke-dasharray="2 2"/><text x="14.5" y="18.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#0B1D45">%</text></svg>
+        <span>O serviço premiado de hoje é <strong>surpresa</strong>: pode ser <span id="rpConviteLista">qualquer um dos nossos serviços</span>.</span>
+      </div>
+      <button class="rp-btn-pdf" type="button" data-fechar-modal data-track-convite="comecar">
+        <span class="material-icons-outlined" style="font-size:1.1rem;">search</span>
+        Começar a procurar
+      </button>
+      <a class="rp-convite-link" href="#rpCacada" data-fechar-modal data-track-convite="como_funciona">Como funciona?</a>
+    </div>
+  </div>
+
+  <!-- ============ POP-UP DO CUPOM DO DIA ============ -->
+  <div class="rp-modal" id="rpModal" hidden>
+    <div class="rp-modal-fundo" data-fechar-modal></div>
+    <div class="rp-modal-box" role="dialog" aria-modal="true" aria-labelledby="rpModalTitulo" tabindex="-1">
+      <button class="rp-btn-fechar" type="button" data-fechar-modal aria-label="Fechar">&times;</button>
+      <svg class="rp-modal-icone" viewBox="0 0 40 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3 2H37a2 2 0 0 1 2 2V10a4 4 0 0 0 0 8V24a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V18a4 4 0 0 0 0-8V4a2 2 0 0 1 2-2Z" fill="#FBBD00" stroke="#0B1D45" stroke-width="1.5"/><path d="M28 5V23" stroke="#0B1D45" stroke-width="1.2" stroke-dasharray="2 2"/><text x="14.5" y="18.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#0B1D45">%</text></svg>
+      <h3 id="rpModalTitulo">Você achou o bilhete dourado!</h3>
+      <p class="rp-modal-texto">O cupom de hoje vale <strong><span data-cacada="desconto">10%</span> de desconto em <span id="rpModalServico"></span></strong>.</p>
+      <div class="rp-modal-codigo" id="rpModalCodigo"></div>
+
+      <div id="rpModalEtapaLoja">
+        <label class="rp-modal-label" for="rpModalLoja">Em qual loja você vai usar?</label>
+        <select class="rp-modal-select" id="rpModalLoja"><option value="">Selecione a loja</option></select>
+        <p class="rp-modal-alerta">
+          <span class="material-icons-outlined">info</span>
+          <span>O cupom só pode ser gerado <strong>uma vez por dia</strong> e vale apenas na loja escolhida.</span>
+        </p>
+        <button class="rp-btn-pdf" id="rpModalPdf" type="button" disabled>
+          <span class="material-icons-outlined" style="font-size:1.1rem;">download</span>
+          Gerar meu cupom
+        </button>
+      </div>
+      <p class="rp-modal-aviso" id="rpModalAviso" aria-live="polite"></p>
+      <a class="rp-btn-agendar" data-agendar href="#" target="_blank" rel="noopener" hidden>
+        <span class="material-icons-outlined" style="font-size:1.1rem;">chat</span>
+        Agendar no WhatsApp
+      </a>
+      <button type="button" class="rp-btn-compartilhar" data-compartilhar="modal" hidden>
+        <span class="material-icons-outlined" style="font-size:1.1rem;">share</span>
+        Desafiar um amigo
+      </button>
+      <p class="rp-modal-rodape">Válido até <span id="rpModalData"></span>, na loja escolhida. Uso único.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     1) CONFIGURAÇÃO
+     ============================================================ */
+  const CONFIG = {
+    whatsapp: '5511950552213',
+    urlFiliais: 'https://romapneus.com.br/filiais',
+    urlServicos: 'https://romapneus.com.br/servicos',
+    urlGoodyear: 'https://romapneus.com.br/aro-pneu',
+    urlCompraSite: 'https://romapneus.com.br/pneus-goodyear' // >>> AJUSTAR <<< para onde o card do ROMA5 leva
+  };
+
+  function linkZap(mensagem) {
+    return 'https://api.whatsapp.com/send?phone=' + CONFIG.whatsapp +
+           '&text=' + encodeURIComponent(mensagem);
+  }
+
+  /* ============================================================
+     2) CATÁLOGO DE VEÍCULOS
+     porte: 'passeio' | 'suv' | 'utilitario' | 'truck'
+     ============================================================ */
+  const CATALOGO_GOODYEAR = {
+    "CAOA Chery": {
+      "ARRIZO": ["205/50R17"],
+      "TIGGO": ["235/60R16"],
+      "TIGGO 2": ["205/55R16", "235/60R16"],
+      "TIGGO 3X": ["205/55R16"],
+      "TIGGO 5X": ["215/60R17", "225/55R18"],
+      "TIGGO 7 PRO": ["225/60R18"],
+      "TIGGO 8": ["235/55R18"]
+    },
+    "Chevrolet": {
+      "AGILE": ["175/65R14", "185/60R15", "195/55R16"],
+      "ASTRA": ["195/60R15", "205/55R16"],
+      "BLAZER": ["225/75R15", "235/70R16", "235/75R15"],
+      "BOLT": ["215/50R17"],
+      "C-10": ["255/60R15"],
+      "CELTA": ["165/70R13", "175/65R14"],
+      "COBALT": ["195/65R15"],
+      "CORSA": ["165/70R13", "175/65R14"],
+      "CRUZE": ["215/50R17", "225/50R17"],
+      "D-20": ["255/60R15"],
+      "EQUINOX": ["235/50R19", "235/50R20"],
+      "EQUINOX EV": ["245/55R19"],
+      "EQUINOX II": ["235/50R19"],
+      "GRAND BLAZER": ["245/75R16"],
+      "MERIVA": ["175/70R14", "185/60R15"],
+      "MONTANA": [
+        "175/70R14",
+        "185/60R15",
+        "195/55R16",
+        "215/60R16"
+      ],
+      "OMEGA": ["225/55R17"],
+      "ONIX": [
+        "175/70R14",
+        "185/65R15",
+        "185/70R14",
+        "195/55R16",
+        "195/65R15"
+      ],
+      "ONIX PLUS": ["195/55R16"],
+      "ONIX.": ["185/65R15"],
+      "OPALA": ["215/70R14", "235/60R15"],
+      "PRISMA": [
+        "165/70R13",
+        "175/65R14",
+        "185/65R15",
+        "185/70R14"
+      ],
+      "S-10": ["235/70R16", "235/75R15", "265/60R18"],
+      "S-10 II": ["255/65R17"],
+      "S10": [
+        "225/75R15",
+        "235/75R15",
+        "265/60R18",
+        "265/70R18"
+      ],
+      "SILVERADO": ["215/80R16", "245/75R16", "275/60R20"],
+      "SONIC": ["195/65R15", "205/55R16"],
+      "SPIN": ["195/65R15"],
+      "TRACKER": ["215/55R17", "215/60R16", "235/60R16"],
+      "TRAILBLAZER": ["265/60R18"],
+      "VECTRA": [
+        "185/70R14",
+        "195/60R15",
+        "195/65R15",
+        "205/55R16"
+      ],
+      "ZAFIRA": ["195/65R15", "205/55R16"]
+    },
+    "Citroen": {
+      "AIRCROSS": ["195/55R16", "205/60R16"],
+      "C3": [
+        "185/60R15",
+        "185/65R14",
+        "195/55R16",
+        "195/60R15",
+        "195/65R15"
+      ],
+      "C3 AIRCROSS": ["215/60R17"],
+      "C3 PICASSO": ["195/55R16"],
+      "C4": ["195/65R15", "205/55R16", "225/45R17"],
+      "C4 CACTUS": ["205/55R17"],
+      "C4 GRAND PICASSO": ["215/50R17", "215/55R16"],
+      "C4 LOUNGE": ["205/55R16", "225/45R17"],
+      "C4 PALLAS": ["215/55R16"],
+      "C4 PICASSO": ["215/50R17", "215/55R16"],
+      "C5": ["205/65R15", "245/45R18"],
+      "C6": ["245/45R18"],
+      "DS3": ["205/45R17"],
+      "DS4": ["225/45R18"],
+      "JUMPER": [
+        "195/70R15",
+        "205/70R15",
+        "205/75R16",
+        "225/75R16"
+      ],
+      "JUMPY": ["215/65R16"]
+    },
+    "Fiat": {
+      "500": ["185/55R15"],
+      "500C": ["205/40R17"],
+      "500E": ["195/55R16"],
+      "ARGO": [
+        "175/65R14",
+        "185/60R15",
+        "195/55R16",
+        "205/60R15"
+      ],
+      "BRAVO": ["205/55R16"],
+      "CRONOS": ["185/60R15", "195/55R16", "205/45R17"],
+      "DOBLÓ": ["175/70R14"],
+      "DUCATO": ["205/70R15", "205/75R16"],
+      "FASTBACK": ["205/50R17", "215/45R18"],
+      "FASTBACK ABARTH": ["215/45R18"],
+      "FIORINO": ["175/70R14"],
+      "FREEMONT": ["225/65R17"],
+      "GRAND SIENA": ["185/65R14", "195/55R16"],
+      "IDEA": ["195/55R16", "195/60R15"],
+      "LINEA": ["195/65R15", "205/55R16"],
+      "MAREA": ["195/60R15"],
+      "MOBI": ["165/70R13", "175/65R14"],
+      "PALIO": [
+        "165/70R13",
+        "175/65R14",
+        "175/65R15",
+        "175/70R13",
+        "175/80R14",
+        "185/60R14",
+        "185/60R15",
+        "185/65R14",
+        "195/55R16"
+      ],
+      "PULSE": ["195/60R16", "205/50R17"],
+      "PULSE ABARTH": ["215/45R18"],
+      "PUNTO": ["185/60R15", "195/55R16", "195/60R15"],
+      "SCUDATO": ["195/75R16", "225/75R16"],
+      "SCUDO": ["215/65R16"],
+      "SIENA": ["165/70R13", "175/65R14", "185/60R15"],
+      "STILO": ["195/65R15", "205/55R16", "215/50R17"],
+      "STRADA": [
+        "175/70R14",
+        "175/80R14",
+        "185/55R16",
+        "195/65R15",
+        "205/55R16",
+        "205/60R15",
+        "205/70R15",
+        "255/40R20"
+      ],
+      "TIPO": ["175/65R14"],
+      "TORO": ["215/65R16", "225/60R17", "225/60R18"],
+      "TORO II": ["225/65R17"],
+      "UNO": [
+        "165/70R13",
+        "175/65R14",
+        "175/70R13",
+        "185/60R15"
+      ]
+    },
+    "Ford": {
+      "BRONCO": ["225/65R17"],
+      "CAPTIVA": ["235/55R18", "235/60R17"],
+      "ECOSPORT": ["205/60R16", "205/65R15"],
+      "EDGE": ["245/50R20", "245/60R18"],
+      "EXPLORER": ["245/65R17", "255/70R16"],
+      "F-1000": ["215/80R16", "235/75R15"],
+      "FIESTA": [
+        "165/70R13",
+        "175/65R14",
+        "185/60R15",
+        "195/55R15"
+      ],
+      "FIESTA II": ["195/50R16"],
+      "FOCUS": [
+        "185/70R14",
+        "195/60R15",
+        "205/55R16",
+        "215/50R17"
+      ],
+      "FUSION": ["225/50R17", "235/45R18"],
+      "GALAXIE": ["235/60R15"],
+      "KA": [
+        "165/70R13",
+        "175/65R14",
+        "185/60R15",
+        "195/55R15"
+      ],
+      "KANGOO": ["175/65R14"],
+      "MAVERICK": ["215/70R14"],
+      "MONDEO": ["195/60R15"],
+      "MUSTANG": ["255/40R19"],
+      "RANGER": [
+        "225/70R14",
+        "235/75R15",
+        "255/55R20",
+        "255/70R16",
+        "265/55R17",
+        "265/60R18",
+        "265/65R17",
+        "265/70R18"
+      ],
+      "RANGER IV": ["255/55R20"],
+      "RANGER ROVER": ["255/55R19"],
+      "TERRITORY": ["235/50R18", "235/50R19", "235/55R17"],
+      "TRANSIT": ["235/65R16"]
+    },
+    "Honda": {
+      "ACCORD": ["225/50R17"],
+      "CITY": [
+        "175/65R15",
+        "185/55R16",
+        "185/60R15",
+        "255/40R20"
+      ],
+      "CITYCLASS": ["225/75R16"],
+      "CIVIC": [
+        "185/65R15",
+        "205/50R17",
+        "205/55R16",
+        "215/50R17",
+        "235/40R18"
+      ],
+      "CR-V": [
+        "205/70R15",
+        "215/65R16",
+        "225/65R17",
+        "235/60R18"
+      ],
+      "FIT": [
+        "175/65R14",
+        "175/65R15",
+        "185/55R16",
+        "185/60R15",
+        "255/40R20"
+      ],
+      "HR-V": ["215/55R17", "215/60R17"]
+    },
+    "Hyundai": {
+      "AZERA": ["235/55R17", "245/45R18"],
+      "CRETA": ["205/65R16", "215/60R17"],
+      "ELANTRA": ["205/60R16"],
+      "H100": ["195/80R14"],
+      "HB20": [
+        "175/70R14",
+        "185/60R15",
+        "195/55R16",
+        "195/65R15"
+      ],
+      "HB20S": ["185/60R15"],
+      "HB20X": ["195/65R15"],
+      "HB20X II": ["195/60R16"],
+      "HR": ["195/70R15", "205/70R15"],
+      "I30": ["225/45R17"],
+      "IX35": ["225/55R18", "225/60R17"],
+      "SANTA FE": ["235/55R19", "235/60R18"],
+      "SONATA": ["225/45R18"],
+      "TUCSON": [
+        "215/65R16",
+        "225/55R18",
+        "225/60R17",
+        "235/60R16"
+      ],
+      "VERACRUZ": ["245/60R18"]
+    },
+    "Jeep": {
+      "CHEROKE": ["245/65R17"],
+      "CHEROKEE": [
+        "225/55R18",
+        "225/60R17",
+        "225/75R15",
+        "235/65R17",
+        "235/70R16",
+        "235/75R15",
+        "245/65R17"
+      ],
+      "COMMANDER": ["235/50R19", "235/55R18", "245/65R17"],
+      "COMPASS": ["215/60R17", "225/55R18", "225/60R17"],
+      "COMPASS II": ["235/45R19"],
+      "GRAND CHEROKEE": [
+        "245/65R17",
+        "245/70R16",
+        "265/50R20",
+        "265/60R18"
+      ],
+      "GRAND CHROKEE": ["245/65R17"],
+      "RENEGADE": ["215/60R17", "215/65R16", "225/55R18"],
+      "WRANGLER": ["225/75R15", "245/75R16", "255/70R18"]
+    },
+    "Kia": {
+      "BONGO": ["195/70R15", "195/75R16"],
+      "CADENZA": ["225/55R17"],
+      "CARNIVAL": ["235/55R19", "235/60R17", "235/60R18"],
+      "CERATO": ["195/65R15", "205/55R16", "205/60R16"],
+      "MOHAVE": ["265/60R18"],
+      "OPTIMA": ["225/45R18"],
+      "PICANTO": ["185/55R15"],
+      "SORENTO": [
+        "235/55R19",
+        "235/60R18",
+        "245/65R17",
+        "245/70R16"
+      ],
+      "SORENTO II": ["235/55R19"],
+      "SOUL": ["205/55R16"],
+      "SPORTAGE": [
+        "215/65R16",
+        "215/70R16",
+        "225/60R17",
+        "235/55R18",
+        "235/60R16",
+        "245/45R19"
+      ],
+      "SPORTAGE IV": ["235/50R19"]
+    },
+    "Land Rover": {
+      "DEFENDER": [
+        "255/55R20",
+        "255/60R20",
+        "255/65R19",
+        "255/70R18"
+      ],
+      "DEFENDER 110": ["255/65R19"],
+      "DEFENDER 90": ["255/65R19"],
+      "DISCOVERY": ["255/50R20"],
+      "DISCOVERY 3": ["255/55R19"],
+      "DISCOVERY 4": ["255/55R19"],
+      "DISCOVERY 5": ["255/55R20", "275/45R21"],
+      "DISCOVERY SPORT": ["235/55R19", "235/60R18"],
+      "EVOQUE": ["235/55R19", "235/60R18"],
+      "FREELANDER": [
+        "215/65R16",
+        "225/55R17",
+        "235/55R19",
+        "235/60R18",
+        "235/65R17"
+      ],
+      "RANGE ROVER": ["255/55R19"],
+      "VELAR": ["255/55R19"]
+    },
+    "Mitsubishi": {
+      "AIRTREK": ["215/55R17"],
+      "ASX": [
+        "215/60R17",
+        "225/55R18",
+        "225/60R17",
+        "235/60R16"
+      ],
+      "ECLIPSE": ["215/50R17"],
+      "ECLIPSE CROSS": ["225/55R18"],
+      "L200": [
+        "205/75R16",
+        "215/80R16",
+        "245/70R16",
+        "255/70R16",
+        "265/65R17",
+        "265/70R16"
+      ],
+      "LANCER": ["215/45R18", "245/40R18"],
+      "OUTLANDER": ["225/55R18", "255/45R20"],
+      "PAJERO": [
+        "235/75R15",
+        "265/50R20",
+        "265/55R17",
+        "265/60R18",
+        "265/65R17",
+        "265/70R16",
+        "265/70R18"
+      ],
+      "PAJERO FULL": ["265/60R18"],
+      "PAJERO SPORT": ["265/50R20", "265/60R18", "265/70R16"],
+      "PAJERO TR4": ["225/65R17"]
+    },
+    "Nissan": {
+      "FRONTIER": ["225/75R15", "255/65R17", "255/70R16"],
+      "KICKS": ["205/55R17", "205/60R16"],
+      "LEAF": ["215/50R17"],
+      "LIVINA": ["185/70R14"],
+      "MARCH": [
+        "165/70R14",
+        "185/55R16",
+        "185/60R15",
+        "255/40R20"
+      ],
+      "PATHFINDER": ["245/65R17", "255/65R17"],
+      "SENTRA": ["195/60R15", "205/50R17", "205/55R16"],
+      "TIIDA": ["195/55R16"],
+      "VERSA": [
+        "185/65R15",
+        "195/55R16",
+        "195/65R15",
+        "205/50R17",
+        "205/55R16"
+      ],
+      "X-TRAIL": ["215/65R16"]
+    },
+    "Peugeot": {
+      "106": ["165/70R13"],
+      "19": ["195/50R15"],
+      "2008": ["205/60R16", "215/60R17"],
+      "205": ["165/70R13"],
+      "206": ["175/65R14"],
+      "207": ["175/65R14", "185/60R15", "185/65R14"],
+      "208": [
+        "195/55R16",
+        "195/60R15",
+        "195/65R15",
+        "205/45R17"
+      ],
+      "208 MCA": ["185/65R15"],
+      "3008 II": ["235/50R19"],
+      "307": ["195/65R15", "205/55R16"],
+      "308": ["205/55R16", "225/45R17"],
+      "408": ["205/55R16", "225/45R17"],
+      "5008": ["235/50R19"],
+      "BOXER": ["205/70R15", "225/75R16"],
+      "EXPERT": ["215/65R16"],
+      "PEUGEOT 208": ["205/45R17"]
+    },
+    "Porsche": {
+      "718 BOXSTER": ["235/35R20", "235/40R19"],
+      "718 CAYMAN": ["235/40R19", "265/35R20", "265/45R18"],
+      "911": [
+        "235/35R19",
+        "235/45R18",
+        "245/35R20",
+        "255/35R20",
+        "265/35R21",
+        "275/35R20",
+        "285/35R19",
+        "295/35R19",
+        "305/30R19",
+        "305/30R21"
+      ],
+      "911 CARRERA": ["235/40R19", "295/35R19"],
+      "911 GT3": ["255/35R20", "315/30R21"],
+      "911 TURBO": ["255/35R20", "315/30R21"],
+      "911 TURBO S": ["255/35R20", "315/30R21"],
+      "BOXSTER": [
+        "235/35R20",
+        "265/35R20",
+        "265/45R18",
+        "285/35R19"
+      ],
+      "CAYENNE": ["235/65R17", "275/40R22", "315/35R22"],
+      "CAYMAN": [
+        "235/35R20",
+        "235/45R18",
+        "265/35R20",
+        "265/45R18",
+        "285/35R19"
+      ],
+      "MACAN": [
+        "235/55R19",
+        "255/40R22",
+        "255/45R21",
+        "295/35R22",
+        "295/40R21"
+      ],
+      "TAYCAN": [
+        "225/55R19",
+        "255/40R20",
+        "265/35R21",
+        "285/40R20",
+        "295/35R20",
+        "305/30R21"
+      ]
+    },
+    "Renault": {
+      "CAPTUR": ["215/60R17"],
+      "CLIO": ["165/70R14", "175/65R14", "185/55R15"],
+      "DUSTER": ["215/65R16"],
+      "KWID": ["165/70R14"],
+      "LOGAN": ["185/65R15", "185/70R14"],
+      "MASTER": ["205/75R16"],
+      "MEGANE": ["185/60R15", "195/65R15", "205/55R16"],
+      "OROCH": ["215/65R16"],
+      "SANDERO": [
+        "185/65R15",
+        "185/70R14",
+        "195/55R16",
+        "205/55R16"
+      ],
+      "SANDERO IV": ["205/45R17"],
+      "SANDERO STEPWAY": ["195/60R16"],
+      "SCENIC": ["195/60R15"],
+      "SYMBOL": ["175/65R14", "185/55R15"]
+    },
+    "Toyota": {
+      "BANDEIRANTE": ["215/80R16"],
+      "CAMRY": ["235/45R18"],
+      "COROLLA": [
+        "185/65R14",
+        "185/70R14",
+        "195/60R15",
+        "195/65R15",
+        "205/55R16",
+        "215/50R17",
+        "225/45R17",
+        "235/40R18"
+      ],
+      "COROLLA CROSS": ["215/60R17", "225/50R18"],
+      "ETIOS": ["175/65R14", "185/60R15"],
+      "HILUX": [
+        "215/80R16",
+        "225/70R17",
+        "235/75R15",
+        "265/55R17",
+        "265/60R18",
+        "265/65R17",
+        "265/70R16",
+        "265/70R18"
+      ],
+      "LAND CRUISER": ["265/65R17"],
+      "LANDCRUISER": ["265/55R17", "265/65R17"],
+      "PRIUS": ["195/65R15"],
+      "RAV4": ["215/70R16", "225/60R18", "235/55R18"],
+      "RAV4 II": ["225/65R17"],
+      "SW4": [
+        "225/75R15",
+        "265/55R17",
+        "265/60R18",
+        "265/65R17",
+        "265/70R16"
+      ],
+      "YARIS": ["185/60R15", "195/50R16"]
+    },
+    "Volkswagen": {
+      "AMAROK": ["245/65R17", "255/50R20", "255/60R18"],
+      "BASALT T-CROSS": ["205/60R16"],
+      "BEETLE": ["195/65R15", "205/55R16"],
+      "CARAVELLE": ["195/70R15"],
+      "CROSSFOX": ["195/55R16", "205/60R15"],
+      "DELIVERY": ["225/75R16"],
+      "EUROVAN": ["195/70R15"],
+      "FOX": ["175/65R14", "195/55R15"],
+      "GOL": [
+        "165/70R13",
+        "175/70R13",
+        "175/70R14",
+        "185/60R14",
+        "185/65R14",
+        "195/50R15",
+        "195/50R16",
+        "195/55R15"
+      ],
+      "GOLF": [
+        "175/80R14",
+        "185/60R14",
+        "195/65R15",
+        "205/55R16",
+        "225/45R17"
+      ],
+      "ID.4": ["255/40R21"],
+      "ID.BUZZ": ["265/45R20"],
+      "JETTA": ["225/45R17"],
+      "KOMBI": ["195/80R14"],
+      "NIVUS": ["205/55R17", "205/60R16"],
+      "PARATI": ["175/70R13", "195/50R15", "195/55R15"],
+      "PASSAT": ["235/45R17", "235/45R18"],
+      "POLO": [
+        "165/70R14",
+        "185/60R14",
+        "185/65R15",
+        "195/55R15",
+        "195/55R16",
+        "205/50R17"
+      ],
+      "POLO GTS": ["205/45R18"],
+      "POLO TRACK": ["185/65R15"],
+      "SANTANA": ["185/65R14"],
+      "SAVEIRO": [
+        "175/70R14",
+        "185/60R14",
+        "195/50R15",
+        "195/55R15",
+        "205/60R15"
+      ],
+      "SPACEFOX": ["195/55R15"],
+      "T-CROSS": ["205/55R17", "205/60R16"],
+      "TAOS": ["235/45R19"],
+      "TIGUAN": [
+        "215/65R17",
+        "235/50R18",
+        "235/55R17",
+        "235/55R18",
+        "255/45R19"
+      ],
+      "TOUAREG": ["235/65R17"],
+      "UP": ["175/70R14", "185/60R15"],
+      "UP!": ["175/70R14"],
+      "VIRSTUS": ["205/50R17"],
+      "VIRTUS": [
+        "195/65R15",
+        "205/45R18",
+        "205/50R17",
+        "205/55R16"
+      ],
+      "VIRTUS EXCLUSIVE": ["205/45R18"],
+      "VOYAGE": [
+        "175/70R14",
+        "185/65R14",
+        "195/50R16",
+        "195/55R15"
+      ],
+      "TERA": [
+        "185/65R15",
+        "205/60R16",
+        "205/55R17"
+      ]
+    },
+    "Volvo": {
+      "C40": ["255/40R20", "255/45R19"],
+      "EX30": ["225/55R18", "245/40R20", "245/45R19"],
+      "EX90": ["295/40R21"],
+      "S60": ["235/40R18", "235/40R19", "235/45R17"],
+      "V60": ["235/40R18"],
+      "XC 40": ["255/45R19"],
+      "XC40": ["235/50R19", "235/55R18", "255/40R20"],
+      "XC60": [
+        "235/55R19",
+        "235/60R18",
+        "235/65R17",
+        "255/40R21",
+        "255/45R20"
+      ],
+      "XC70": ["235/55R17"],
+      "XC90": ["235/65R17"]
+    }
+  };
+
+  // Índice reverso: medida -> lista de veículos que a usam.
+  // Construído a partir do próprio catálogo, sem duplicar dado.
+  const INDICE_MEDIDAS = (function () {
+    const idx = {};
+    Object.keys(CATALOGO_GOODYEAR).forEach(function (marca) {
+      const modelos = CATALOGO_GOODYEAR[marca];
+      Object.keys(modelos).forEach(function (modelo) {
+        modelos[modelo].forEach(function (medida) {
+          if (!idx[medida]) idx[medida] = [];
+          idx[medida].push(marca + ' ' + modelo);
+        });
+      });
+    });
+    return idx;
+  })();
+
+  // Quebra "195/55R16" nas partes que alimentam os selects.
+  function partesMedida(medida) {
+    const m = /^(\d{3})\/(\d{2})R(\d{2}(?:\.5)?)$/.exec(medida);
+    if (!m) return null;
+    return { largura: m[1], perfil: m[2], aro: m[3] };
+  }
+
+  const MEDIDAS = (function () {
+    const L = new Set(), P = new Set(), A = new Set();
+    Object.keys(INDICE_MEDIDAS).forEach(function (med) {
+      const p = partesMedida(med);
+      if (!p) return;
+      L.add(p.largura); P.add(p.perfil); A.add(p.aro);
+    });
+    const num = function (a, b) { return parseFloat(a) - parseFloat(b); };
+    return {
+      larguras: Array.from(L).sort(num),
+      perfis:   Array.from(P).sort(num),
+      aros:     Array.from(A).sort(num)
+    };
+  })();
+
+  // Porte inferido da medida — é o que as regras de cupom consultam.
+  function porteDaMedida(medida) {
+    const p = partesMedida(medida);
+    if (!p) return 'passeio';
+    const aro = parseFloat(p.aro), larg = parseInt(p.largura, 10), perf = parseInt(p.perfil, 10);
+    if (aro >= 22) return 'truck';
+    if (larg >= 235 && perf >= 60) return 'utilitario';
+    if (larg >= 215 && aro >= 17) return 'suv';
+    return 'passeio';
+  }
+
+  /* ============================================================
+     3) CATEGORIAS
+     ============================================================ */
+  const CATEGORIAS = [
+    { id: 'todos',       rotulo: 'Todos' },
+    { id: 'pneus',       rotulo: 'Pneus' },
+    { id: 'oleo',        rotulo: 'Troca de Óleo' },
+    { id: 'freios',      rotulo: 'Freios' },
+    { id: 'alinhamento', rotulo: 'Alinhamento' },
+    { id: 'checkup',     rotulo: 'Check-up' },
+    { id: 'truck',       rotulo: 'Truck Center' }
+  ];
+
+  /* ============================================================
+     4) CUPONS  — a única coisa que você edita no dia a dia
+     ------------------------------------------------------------
+     portes: array de portes aceitos. [] = vale para todos.
+     aroMinimo: aro mínimo em polegadas. null = sem restrição.
+     ============================================================ */
+  // IMPORTANTE: cada cupom tem sua PRÓPRIA chave de imagem aqui embaixo.
+  // Nunca reaproveite a mesma chave em dois cupons diferentes — foi isso
+  // que causava o bug de "editei uma imagem e outro card mudou junto".
+  // Se precisar trocar a foto de um cupom, troque só o link dessa chave.
+  const IMG = {
+    // ---------- SERVIÇOS (chave = nome do serviço) ----------
+    montagemPneu: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkC5V50ygaGtXUyDEikdJpJ422HwAjUdJmk2N_Vq9nL4zIyF1tyqKU4vug&s=10', // Montagem de pneus — card "montagem"
+    checkup:      'https://www.azulseguros.com.br/wp-content/uploads/2013/11/revisao.jpg', // Check-up preventivo — card "checkup"
+    trocaOleo:    'https://static.vecteezy.com/system/resources/thumbnails/044/313/732/small/pour-engine-oil-car-automotive-maintenance-transportation-lubricant-industry-clipping-path-png.png', // Troca de óleo — card "oleo"
+    freios:       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjV8sftpQ7R6RovuKdEVcfZ9m-J8Zy6qeGQWr4wh0U0iNoIw0n_VR68c1Z&s=10', // Freios — card "freios"
+    alinhamento:  'https://www.2e4rodas.com.br/wp-content/uploads/2021/10/alinhamento-automotivo.png', // Alinhamento e balanceamento — card "alinhamento"
+    truckCenter:  'https://romapneus.com.br/media/wysiwyg/Itaqua.webp', // TODO Lucas: trocar por foto de caminhão/frota — card "truck"
+    suspensao:    'https://blog.nakata.com.br/storage/uploads/2018/02/163814-sistema-de-suspensao-tudo-o-que-o-motorista-precisa-saber.jpg', // TODO Lucas: trocar por foto de amortecedor — card "suspensao"
+
+    // ---------- PNEUS À VENDA NO SITE (comentário diz o que é o pneu) ----------
+    pneuSite: 'https://romapneus.com.br/media/catalog/product/cache/9e523edd3336df881d108deb6284e486/e/f/efficientgrip_performance_novo_1_2__1.webp', // EfficientGrip Performance — card "site-roma5"
+    pneuJogo4: 'https://romapneus.com.br/media/catalog/product/cache/9e523edd3336df881d108deb6284e486/2/0/2023-1141_kelly_edge_sport2_angled_1_13.webp' // Edge Sport 2 — card "pneus-goodyear" (a imagem anterior estava quebrada)
+  };
+
+  // Cada card é um item da vitrine. Dois tipos:
+  //   - CUPOM REAL (só o ROMA5 hoje): tem prefixo, valor e codigo.
+  //   - SERVIÇO: tem titulo e descricao, sem preço e sem código.
+  // Campos opcionais:
+  //   link: URL do botão. Sem link, o botão abre o WhatsApp com mensagemZap.
+  //   instrucao: texto da faixa amarela. Use {codigo} onde o código deve aparecer.
+  //   copiavel: true mostra o botão "Copiar" ao lado do código.
+  //   premiavel: true mostra no card que ele pode ser o serviço premiado
+  //              da caça ao cupom (confira a lista CACADA.servicos).
+  const CUPONS = [
+    {
+      // >>> AJUSTAR <<< Cupom REAL: crie no Magento antes de publicar
+      // (Marketing > Regras de Preço do Carrinho > código ROMA5, 5% do preço do produto)
+      id: 'site-roma5',
+      categoria: 'pneus',
+      tag: 'Compra no site',
+      selo: 'Só online',
+      prefixo: 'Desconto extra de',
+      valor: '+5% OFF',
+      descricao: 'Comprando seus pneus pelo site, você ganha mais 5% de desconto direto no carrinho.',
+      regras: '*Válido para pneus comprados no site. Aplique no campo "Aplicar código de desconto" do carrinho.',
+      imagem: IMG.pneuSite,
+      textoBotao: 'Comprar no site',
+      codigo: 'ROMA5',
+      temCodigo: true,
+      copiavel: true,
+      instrucao: 'Use o cupom {codigo} no carrinho do site',
+      link: CONFIG.urlCompraSite,
+      portes: [],
+      aroMinimo: null,
+      mensagemZap: null
+    },
+    {
+      id: 'pneus-goodyear',
+      categoria: 'pneus',
+      tag: 'Pneus Goodyear',
+      selo: 'Revenda oficial',
+      titulo: 'Pneus Goodyear',
+      descricao: 'Linha completa para passeio, SUV e utilitários. Compre no site ou em uma das 13 lojas.',
+      regras: '*Disponibilidade de medidas sujeita a estoque. Consulte o televendas.',
+      imagem: IMG.pneuJogo4,
+      textoBotao: 'Ver pneus no site',
+      link: CONFIG.urlCompraSite,
+      portes: [],
+      aroMinimo: null,
+      mensagemZap: null
+    },
+    {
+      id: 'montagem',
+      categoria: 'pneus',
+      tag: 'Serviço',
+      selo: null,
+      titulo: 'Montagem de pneus',
+      descricao: 'Montagem feita por equipe especializada. Grátis na compra de pneus da linha de passeio.',
+      regras: '*Montagem grátis válida para pneus de passeio, nas lojas físicas.',
+      imagem: IMG.montagemPneu,
+      textoBotao: 'Agendar montagem',
+      portes: [],
+      aroMinimo: null,
+      mensagemZap: 'Olá! Gostaria de agendar a montagem dos meus pneus.'
+    },
+    {
+      id: 'alinhamento',
+      categoria: 'alinhamento',
+      tag: 'Serviço',
+      selo: null,
+      titulo: 'Alinhamento e balanceamento',
+      descricao: 'Garante desgaste regular dos pneus, estabilidade e direção firme.',
+      regras: '*Valores variam conforme loja, aro e modelo do veículo.',
+      imagem: IMG.alinhamento,
+      textoBotao: 'Agendar alinhamento',
+      premiavel: true,
+      portes: ['passeio', 'suv', 'utilitario'],
+      aroMinimo: null,
+      mensagemZap: 'Olá! Quero agendar alinhamento e balanceamento.'
+    },
+    {
+      id: 'oleo',
+      categoria: 'oleo',
+      tag: 'Serviço',
+      selo: null,
+      titulo: 'Troca de óleo e filtro',
+      descricao: 'Óleo com a viscosidade e a especificação indicadas para o seu motor.',
+      regras: '*Valores variam conforme loja e modelo do veículo.',
+      imagem: IMG.trocaOleo,
+      textoBotao: 'Agendar troca de óleo',
+      premiavel: true,
+      portes: ['passeio', 'suv', 'utilitario'],
+      aroMinimo: null,
+      mensagemZap: 'Olá! Quero agendar uma troca de óleo.'
+    },
+    {
+      id: 'freios',
+      categoria: 'freios',
+      tag: 'Serviço',
+      selo: null,
+      titulo: 'Freios',
+      descricao: 'Troca de pastilhas, discos e revisão completa do sistema de freios.',
+      regras: '*Orçamento após avaliação dos componentes.',
+      imagem: IMG.freios,
+      textoBotao: 'Agendar freios',
+      premiavel: true,
+      portes: ['passeio', 'suv', 'utilitario'],
+      aroMinimo: null,
+      mensagemZap: 'Olá! Quero um orçamento de freios.'
+    },
+    {
+      id: 'suspensao',
+      categoria: 'checkup',
+      tag: 'Serviço',
+      selo: null,
+      titulo: 'Suspensão',
+      descricao: 'Amortecedores, molas e componentes da suspensão para rodar com conforto e segurança.',
+      regras: '*Orçamento após avaliação dos componentes.',
+      imagem: IMG.suspensao,
+      textoBotao: 'Agendar suspensão',
+      premiavel: true,
+      portes: ['passeio', 'suv', 'utilitario'],
+      aroMinimo: null,
+      mensagemZap: 'Olá! Quero um orçamento de suspensão.'
+    },
+    {
+      id: 'checkup',
+      categoria: 'checkup',
+      tag: 'Revisão',
+      selo: 'Gratuito',
+      titulo: 'Check-up preventivo',
+      descricao: 'Inspeção de freios, suspensão, amortecedores e muito mais nas 13 unidades.',
+      regras: '*Inspeção técnica e visual gratuita, com orçamento sem compromisso.',
+      imagem: IMG.checkup,
+      textoBotao: 'Agendar check-up',
+      portes: [],
+      aroMinimo: null,
+      mensagemZap: 'Olá! Quero agendar um check-up preventivo.'
+    },
+    {
+      id: 'truck',
+      categoria: 'truck',
+      tag: 'Truck Center',
+      selo: 'Frota',
+      titulo: 'Truck Center',
+      descricao: 'Pneus, recapagem e avaliação técnica para caminhões, ônibus e frotas.',
+      regras: '*Exclusivo para veículos pesados. Agendamento prévio.',
+      imagem: IMG.truckCenter,
+      textoBotao: 'Falar com Frotas',
+      portes: ['truck'],
+      aroMinimo: null,
+      mensagemZap: 'Olá! Quero atendimento no Truck Center.'
+    }
+  ];
+
+  /* ============================================================
+     5) ESTADO CENTRAL
+     ============================================================ */
+  const estado = {
+    categoria: 'todos',
+    veiculo: null,   // { marca, modelo, medidas:[], medidaAtiva, porte }
+    origem: null     // 'veiculo' | 'medida'
+  };
+
+  // Caça ao cupom: é criada na seção 10. Fica null até lá.
+  let cacada = null;
+  // false fora do período da campanha: some o aviso "serviço premiado" dos cards.
+  let cacadaNoAr = true;
+
+  /* ============================================================
+     6) ELEGIBILIDADE DO CUPOM
+     ============================================================ */
+  function cupomServeParaVeiculo(cupom, v) {
+    if (!v) return true;
+    if (cupom.portes.length > 0 && cupom.portes.indexOf(v.porte) === -1) return false;
+    if (cupom.aroMinimo !== null && parseFloat(v.aro) < cupom.aroMinimo) return false;
+    return true;
+  }
+
+  function cuponsFiltrados() {
+    return CUPONS.filter(function (c) {
+      const passaCategoria = (estado.categoria === 'todos') || (c.categoria === estado.categoria);
+      return passaCategoria && cupomServeParaVeiculo(c, estado.veiculo);
+    });
+  }
+
+  function contarNaCategoria(idCategoria) {
+    return CUPONS.filter(function (c) {
+      const passaCategoria = (idCategoria === 'todos') || (c.categoria === idCategoria);
+      return passaCategoria && cupomServeParaVeiculo(c, estado.veiculo);
+    }).length;
+  }
+
+  /* ============================================================
+     6b) MONTAGEM DO OBJETO VEÍCULO
+     ============================================================ */
+  function veiculoPorModelo(marca, modelo) {
+    const medidas = CATALOGO_GOODYEAR[marca][modelo];
+    const medidaAtiva = medidas[0];
+    const p = partesMedida(medidaAtiva);
+    return {
+      marca: marca,
+      modelo: modelo,
+      medidas: medidas.slice(),
+      medidaAtiva: medidaAtiva,
+      aro: p ? p.aro : null,
+      porte: porteDaMedida(medidaAtiva),
+      rotulo: marca + ' ' + modelo
+    };
+  }
+
+  function veiculoPorMedida(medida) {
+    const p = partesMedida(medida);
+    const compativeis = INDICE_MEDIDAS[medida] || [];
+    return {
+      marca: null,
+      modelo: null,
+      medidas: [medida],
+      medidaAtiva: medida,
+      aro: p ? p.aro : null,
+      porte: porteDaMedida(medida),
+      compativeis: compativeis,
+      rotulo: 'Medida ' + medida
+    };
+  }
+
+  // Troca a medida ativa sem perder o veículo selecionado
+  // (um Onix tem 5 medidas possíveis; a escolhida muda o porte).
+  function trocarMedidaAtiva(medida) {
+    if (!estado.veiculo) return;
+    const p = partesMedida(medida);
+    estado.veiculo.medidaAtiva = medida;
+    estado.veiculo.aro = p ? p.aro : null;
+    estado.veiculo.porte = porteDaMedida(medida);
+  }
+
+  /* ============================================================
+     7) RENDERIZAÇÃO
+     ============================================================ */
+  const el = {
+    abas:        document.getElementById('rpAbas'),
+    grid:        document.getElementById('rpGrid'),
+    vazio:       document.getElementById('rpVazio'),
+    titulo:      document.getElementById('rpTituloSecao'),
+    contador:    document.getElementById('rpContador'),
+    filtroBox:   document.getElementById('rpFiltroAtivo'),
+    filtroTexto: document.getElementById('rpFiltroAtivoTexto'),
+    labelVeic:   document.getElementById('rpLabelVeiculo'),
+    pillVeic:    document.getElementById('rpAbrirDrawer')
+  };
+
+  function escapar(txt) {
+    return String(txt)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function montarAbas() {
+    el.abas.innerHTML = CATEGORIAS.map(function (cat) {
+      const total = contarNaCategoria(cat.id);
+      const ativo = (cat.id === estado.categoria) ? ' is-ativo' : '';
+      return '<button type="button" class="rp-aba' + ativo + '" data-cat="' + cat.id + '">' +
+               escapar(cat.rotulo) +
+               '<span class="rp-aba-contador">' + total + '</span>' +
+             '</button>';
+    }).join('');
+  }
+
+  function montarCard(c) {
+    const selo = c.selo
+      ? '<span class="rp-card-selo">' + escapar(c.selo) + '</span>'
+      : '';
+
+    // Texto da faixa amarela: o cupom pode trazer o seu próprio (campo instrucao)
+    const modelo = c.instrucao || 'Mostre o cupom {codigo} na loja ou fale com nosso televendas';
+    const partes = escapar(modelo).split('{codigo}');
+    const textoInstrucao = partes.join('<strong>' + escapar(c.codigo) + '</strong>');
+    const botaoCopiar = c.copiavel
+      ? '<button type="button" class="rp-btn-copiar" data-copiar="' + escapar(c.codigo) + '">Copiar</button>'
+      : '';
+
+    let instrucao = '';
+    if (c.temCodigo) {
+      instrucao = '<p class="rp-card-instrucao">' +
+          '<span class="material-icons-outlined">info</span>' +
+          '<span>' + textoInstrucao + '</span>' + botaoCopiar +
+        '</p>';
+    } else if (c.premiavel && cacadaNoAr) {
+      // Serviço que pode sair na caça ao cupom: chama para o jogo
+      instrucao = '<a class="rp-card-instrucao rp-card-cacada" href="#rpCacada">' +
+          '<span class="material-icons-outlined">confirmation_number</span>' +
+          '<span>Pode ser o serviço premiado de hoje. <strong>Ache o bilhete dourado!</strong></span>' +
+        '</a>';
+    }
+
+    // Corpo: cupom real mostra o valor; serviço mostra o nome
+    const topoCorpo = c.valor
+      ? '<span class="rp-prefixo">' + escapar(c.prefixo) + '</span>' +
+        '<span class="rp-valor">' + escapar(c.valor) + '</span>'
+      : '<span class="rp-prefixo">Fazemos nas lojas</span>' +
+        '<h3 class="rp-titulo">' + escapar(c.titulo) + '</h3>';
+
+    // Botão: link próprio (ex.: ir para o site) ou WhatsApp
+    const href = c.link ? c.link : linkZap(c.mensagemZap);
+    const classeBotao = c.link ? 'rp-btn-acao is-site' : 'rp-btn-acao';
+
+    return '' +
+      '<article class="rp-card" data-id="' + c.id + '">' +
+        '<div class="rp-card-head">' +
+          '<span class="rp-card-tag">' + escapar(c.tag) + '</span>' + selo +
+          '<img src="' + c.imagem + '" alt="' + escapar(c.titulo || c.tag) + '" loading="lazy">' +
+        '</div>' +
+        '<div class="rp-card-body">' +
+          topoCorpo +
+          '<p class="rp-desc">' + escapar(c.descricao) + '</p>' +
+          '<p class="rp-regras">' + escapar(c.regras) + '</p>' +
+        '</div>' +
+        '<div class="rp-card-foot">' +
+          instrucao +
+          '<a class="' + classeBotao + '" href="' + escapar(href) + '" target="_blank" rel="noopener">' +
+            escapar(c.textoBotao) +
+          '</a>' +
+        '</div>' +
+      '</article>';
+  }
+
+  function renderizar() {
+    const lista = cuponsFiltrados();
+
+    montarAbas();
+
+    el.grid.innerHTML = lista.map(montarCard).join('');
+    el.vazio.classList.toggle('is-visivel', lista.length === 0);
+
+    const cat = CATEGORIAS.find(function (c) { return c.id === estado.categoria; });
+    el.titulo.textContent = (estado.categoria === 'todos')
+      ? 'Pneus & Serviços'
+      : cat.rotulo;
+
+    el.contador.textContent = lista.length === 1
+      ? 'Exibindo 1 item'
+      : 'Exibindo ' + lista.length + ' itens';
+
+    if (estado.veiculo) {
+      const v = estado.veiculo;
+      el.filtroTexto.textContent = 'Mostrando ofertas para: ' + v.rotulo + '  •  ' + v.medidaAtiva;
+      el.filtroBox.classList.add('is-visivel');
+      el.labelVeic.textContent = v.rotulo;
+      el.pillVeic.classList.add('is-ativo');
+    } else {
+      el.filtroBox.classList.remove('is-visivel');
+      el.labelVeic.textContent = 'Adicionar Veículo';
+      el.pillVeic.classList.remove('is-ativo');
+    }
+
+    renderizarPainel();
+
+    // A grade é redesenhada a cada filtro; se o bilhete estiver num card,
+    // ele precisa ser colocado de volta.
+    if (cacada) cacada.aposRenderizar();
+  }
+
+  /* ============================================================
+     7b) PAINEL DE RESULTADO — medida, compatíveis e vitrine
+     ============================================================ */
+  const ROTULO_PORTE = {
+    passeio:    'Linha Passeio',
+    suv:        'Linha SUV',
+    utilitario: 'Linha Utilitário / Picape',
+    truck:      'Linha Truck / Carga'
+  };
+
+  const painel = {
+    box:      document.getElementById('rpResultado'),
+    veiculo:  document.getElementById('rpResVeiculo'),
+    porte:    document.getElementById('rpResPorte'),
+    label:    document.getElementById('rpResLabelMedidas'),
+    chips:    document.getElementById('rpResChips'),
+    nota:     document.getElementById('rpResNota'),
+    compat:   document.getElementById('rpResCompat'),
+    vitrine:  document.getElementById('rpBtnVitrine'),
+    cotar:    document.getElementById('rpBtnCotar')
+  };
+
+  // Monta a URL da vitrine já filtrada pelo aro.
+  function urlVitrine(medida) {
+    const p = partesMedida(medida);
+    if (!p) return CONFIG.urlGoodyear;
+    // Extrai só o número do aro (ex: "16" de "R16")
+    const numeroAro = p.aro.replace('R', '');
+    return CONFIG.urlGoodyear + '/aro-' + numeroAro + '-em-geral';
+  }
+
+  function renderizarPainel() {
+    const v = estado.veiculo;
+
+    if (!v) {
+      painel.box.classList.remove('is-visivel');
+      return;
+    }
+
+    painel.box.classList.add('is-visivel');
+    painel.veiculo.textContent = v.rotulo;
+    painel.porte.textContent = ROTULO_PORTE[v.porte] || v.porte;
+
+    // chips de medida
+    painel.label.textContent = (estado.origem === 'medida')
+      ? 'Medida selecionada'
+      : (v.medidas.length > 1
+          ? 'Medidas homologadas Goodyear — escolha a do seu carro'
+          : 'Medida homologada Goodyear');
+
+    painel.chips.innerHTML = v.medidas.map(function (m) {
+      const ativo = (m === v.medidaAtiva) ? ' is-ativo' : '';
+      return '<button type="button" class="rp-chip' + ativo + '" data-medida="' + m + '">' + m + '</button>';
+    }).join('');
+
+    // nota contextual
+    const qtdCupons = cuponsFiltrados().length;
+    painel.nota.innerHTML =
+      '<span class="material-icons-outlined">local_offer</span>' +
+      '<span><strong>' + qtdCupons + '</strong> ' +
+      (qtdCupons === 1 ? 'item compatível' : 'itens compatíveis') +
+      ' com esse veículo nesta categoria.</span>';
+
+    // quando a busca foi por medida, mostra quem mais usa
+    if (estado.origem === 'medida' && v.compativeis && v.compativeis.length) {
+      const amostra = v.compativeis.slice(0, 8).join(' · ');
+      const resto = v.compativeis.length > 8 ? ' e mais ' + (v.compativeis.length - 8) + ' modelos' : '';
+      painel.compat.style.display = 'block';
+      painel.compat.innerHTML = '<strong>Também equipa:</strong> ' + escapar(amostra) + escapar(resto) + '.';
+    } else {
+      painel.compat.style.display = 'none';
+    }
+
+    // ações
+    painel.vitrine.href = urlVitrine(v.medidaAtiva);
+    painel.cotar.href = linkZap(
+      'Olá! Tenho um ' + v.rotulo + ' (medida ' + v.medidaAtiva + '). ' +
+      'Quero cotar pneus Goodyear com os cupons do site.'
+    );
+  }
+
+  /* ============================================================
+     8) EVENTOS — abas, limpar
+     ============================================================ */
+  el.abas.addEventListener('click', function (ev) {
+    const btn = ev.target.closest('.rp-aba');
+    if (!btn) return;
+    estado.categoria = btn.getAttribute('data-cat');
+    renderizar();
+  });
+
+  document.getElementById('rpLimparFiltro').addEventListener('click', function () {
+    estado.veiculo = null;
+    estado.origem = null;
+    renderizar();
+  });
+
+  document.getElementById('rpVerTudo').addEventListener('click', function () {
+    estado.categoria = 'todos';
+    estado.veiculo = null;
+    estado.origem = null;
+    renderizar();
+  });
+
+  /* ============================================================
+     9) DRAWER DE VEÍCULO
+     ============================================================ */
+  const drawer = {
+    overlay:  document.getElementById('rpOverlay'),
+    abrir:    document.getElementById('rpAbrirDrawer'),
+    fechar:   document.getElementById('rpFecharDrawer'),
+    abaVeic:  document.getElementById('rpAbaVeiculo'),
+    abaMed:   document.getElementById('rpAbaMedida'),
+    bodyVeic: document.getElementById('rpBodyVeiculo'),
+    bodyMed:  document.getElementById('rpBodyMedida'),
+    busca:    document.getElementById('rpBuscaVeiculo'),
+    sugestoes:document.getElementById('rpSugestoes'),
+    marca:    document.getElementById('rpSelMarca'),
+    modelo:   document.getElementById('rpSelModelo'),
+    largura:  document.getElementById('rpSelLargura'),
+    perfil:   document.getElementById('rpSelPerfil'),
+    aro:      document.getElementById('rpSelAro'),
+    aplicar:  document.getElementById('rpAplicar')
+  };
+
+  let abaAtualDrawer = 'veiculo';
+
+  function preencherSelect(select, itens, placeholder) {
+    let html = '<option value="">' + placeholder + '</option>';
+    itens.forEach(function (i) {
+      html += '<option value="' + escapar(i) + '">' + escapar(i) + '</option>';
+    });
+    select.innerHTML = html;
+  }
+
+  // Lista achatada usada pela busca por texto
+  const INDICE_BUSCA = (function () {
+    const lista = [];
+    Object.keys(CATALOGO_GOODYEAR).forEach(function (marca) {
+      Object.keys(CATALOGO_GOODYEAR[marca]).forEach(function (modelo) {
+        lista.push({
+          marca: marca,
+          modelo: modelo,
+          rotulo: marca + ' ' + modelo,
+          busca: semAcento(marca + ' ' + modelo),
+          qtd: CATALOGO_GOODYEAR[marca][modelo].length
+        });
+      });
+    });
+    return lista.sort(function (a, b) { return a.rotulo.localeCompare(b.rotulo, 'pt-BR'); });
+  })();
+
+  function semAcento(txt) {
+    return String(txt).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  preencherSelect(drawer.marca, Object.keys(CATALOGO_GOODYEAR).sort(), 'Selecione a Marca');
+  preencherSelect(drawer.largura, MEDIDAS.larguras, 'Largura');
+  preencherSelect(drawer.perfil,  MEDIDAS.perfis,   'Perfil');
+  preencherSelect(drawer.aro,     MEDIDAS.aros,     'Aro');
+
+  /* ---------- busca por texto ---------- */
+  drawer.busca.addEventListener('input', function () {
+    const termo = semAcento(drawer.busca.value.trim());
+    if (termo.length < 2) {
+      drawer.sugestoes.classList.remove('is-visivel');
+      return;
+    }
+    const achados = INDICE_BUSCA.filter(function (v) {
+      return v.busca.indexOf(termo) !== -1;
+    }).slice(0, 30);
+
+    if (achados.length === 0) {
+      drawer.sugestoes.innerHTML =
+        '<div class="rp-sugestao-vazio">Nenhum modelo encontrado na tabela Goodyear.<br>' +
+        'Fale com o televendas para confirmar a medida.</div>';
+    } else {
+      drawer.sugestoes.innerHTML = achados.map(function (v) {
+        return '<div class="rp-sugestao" data-marca="' + escapar(v.marca) + '" data-modelo="' + escapar(v.modelo) + '">' +
+                 '<span class="rp-sugestao-nome">' + escapar(v.rotulo) + '</span>' +
+                 '<span class="rp-sugestao-qtd">' + v.qtd + (v.qtd > 1 ? ' medidas' : ' medida') + '</span>' +
+               '</div>';
+      }).join('');
+    }
+    drawer.sugestoes.classList.add('is-visivel');
+  });
+
+  drawer.sugestoes.addEventListener('click', function (ev) {
+    const item = ev.target.closest('.rp-sugestao');
+    if (!item) return;
+    aplicarVeiculo(item.getAttribute('data-marca'), item.getAttribute('data-modelo'));
+  });
+
+  /* ---------- selects dependentes ---------- */
+  drawer.marca.addEventListener('change', function () {
+    const marca = drawer.marca.value;
+    if (!marca) {
+      drawer.modelo.disabled = true;
+      drawer.modelo.innerHTML = '<option value="">Escolha a marca primeiro</option>';
+      return;
+    }
+    preencherSelect(drawer.modelo, Object.keys(CATALOGO_GOODYEAR[marca]).sort(), 'Selecione o Modelo');
+    drawer.modelo.disabled = false;
+  });
+
+  /* ---------- abrir / fechar ---------- */
+  function abrirDrawer() {
+    drawer.overlay.classList.add('is-aberto');
+    setTimeout(function () { drawer.busca.focus(); }, 320);
+  }
+  function fecharDrawer() {
+    drawer.overlay.classList.remove('is-aberto');
+    drawer.sugestoes.classList.remove('is-visivel');
+    drawer.busca.value = '';
+  }
+
+  drawer.abrir.addEventListener('click', abrirDrawer);
+  drawer.fechar.addEventListener('click', fecharDrawer);
+  drawer.overlay.addEventListener('click', function (ev) {
+    if (ev.target === drawer.overlay) fecharDrawer();
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape') fecharDrawer();
+  });
+
+  drawer.abaVeic.addEventListener('click', function () {
+    abaAtualDrawer = 'veiculo';
+    drawer.abaVeic.classList.add('is-ativo');
+    drawer.abaMed.classList.remove('is-ativo');
+    drawer.bodyVeic.style.display = 'block';
+    drawer.bodyMed.style.display = 'none';
+  });
+
+  drawer.abaMed.addEventListener('click', function () {
+    abaAtualDrawer = 'medida';
+    drawer.abaMed.classList.add('is-ativo');
+    drawer.abaVeic.classList.remove('is-ativo');
+    drawer.bodyMed.style.display = 'block';
+    drawer.bodyVeic.style.display = 'none';
+  });
+
+  /* ---------- aplicar ---------- */
+  function aplicarVeiculo(marca, modelo) {
+    estado.veiculo = veiculoPorModelo(marca, modelo);
+    estado.origem = 'veiculo';
+    fecharDrawer();
+    renderizar();
+    document.getElementById('rpResultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  drawer.aplicar.addEventListener('click', function () {
+    if (abaAtualDrawer === 'veiculo') {
+      const marca = drawer.marca.value, modelo = drawer.modelo.value;
+      if (!marca || !modelo) {
+        alert('Selecione a marca e o modelo, ou use a busca por nome.');
+        return;
+      }
+      aplicarVeiculo(marca, modelo);
+    } else {
+      const l = drawer.largura.value, pf = drawer.perfil.value, ar = drawer.aro.value;
+      if (!l || !pf || !ar) {
+        alert('Selecione largura, perfil e aro.');
+        return;
+      }
+      const medida = l + '/' + pf + 'R' + ar;
+      if (!INDICE_MEDIDAS[medida]) {
+        alert('A medida ' + medida + ' não consta na tabela Goodyear que temos aqui.\n' +
+              'Confirme com o televendas — pode haver equivalência.');
+        return;
+      }
+      estado.veiculo = veiculoPorMedida(medida);
+      estado.origem = 'medida';
+      fecharDrawer();
+      renderizar();
+      document.getElementById('rpResultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+
+  document.getElementById('rpTrocarVeiculo').addEventListener('click', abrirDrawer);
+
+  /* ---------- troca de medida pelos chips ---------- */
+  document.getElementById('rpResChips').addEventListener('click', function (ev) {
+    const chip = ev.target.closest('.rp-chip');
+    if (!chip) return;
+    trocarMedidaAtiva(chip.getAttribute('data-medida'));
+    renderizar();
+  });
+
+  /* ============================================================
+     10) CAÇA AO CUPOM (gameficação)
+     ------------------------------------------------------------
+     Todo dia o script escolhe, sozinho:
+       - ONDE o bilhete dourado fica escondido;
+       - QUAL serviço é o premiado (ROMA-ALINHAMENTO, ROMA-BALANCEAMENTO...).
+     A escolha usa a data de hoje como "semente": todos os clientes veem a
+     mesma coisa no mesmo dia, e no dia seguinte muda sem ninguém mexer.
+     ============================================================ */
+  const CACADA = {
+    // >>> AJUSTAR <<< serviços que podem ser premiados (confirmar com as lojas)
+    servicos: [
+      // Os cards desses serviços aparecem com "premiavel: true" no array CUPONS.
+      { codigo: 'ROMA-ALINHAMENTO',   nome: 'Alinhamento' },
+      { codigo: 'ROMA-BALANCEAMENTO', nome: 'Balanceamento' },
+      { codigo: 'ROMA-OLEO',          nome: 'Troca de óleo' },
+      { codigo: 'ROMA-FREIOS',        nome: 'Freios' },
+      { codigo: 'ROMA-SUSPENSAO',     nome: 'Suspensão' }
+    ],
+    desconto: '10%',                  // >>> AJUSTAR <<< provisório
+    // Período da campanha (datas no fuso de São Paulo, formato AAAA-MM-DD)
+    inicio: '2026-11-01',
+    fim:    '2026-11-30',
+    // >>> AJUSTAR <<< endereços das lojas (romapneus.com.br/filiais).
+    // O nome e o endereço saem impressos no PDF do cliente.
+    lojas: [
+      // Fonte: lista de endereços enviada pelo Lucas (29/10), conferida com os CEPs dos Correios.
+      { nome: 'Roma Pneus - Arujá',        endereco: 'Av. João Manoel, 79 - Centro, Arujá - SP, 07400-605' },
+      { nome: 'Roma Pneus - Butantã',      endereco: 'Av. Eliseu de Almeida, 3000 - Butantã, São Paulo - SP, 05537-000' },
+      { nome: 'Roma Pneus - Fazendinha',   endereco: 'Av. Ten. Marques, 5431 - Fazendinha, Santana de Parnaíba - SP, 06529-001' },
+      { nome: 'Roma Pneus - Guarulhos',    endereco: 'Av. Paulo Faccini, 950 - Macedo, Guarulhos - SP, 07111-000' },
+      { nome: 'Roma Pneus - Itaquá (Truck Center)', endereco: 'Estrada de Santa Isabel, 1610 - Centro - Campo da Venda, Itaquaquecetuba - SP, 08499-000' },
+      { nome: 'Roma Pneus - Lapa',         endereco: 'R. Guaicurus, 1238 - Água Branca, São Paulo - SP, 05033-022' },
+      { nome: 'Roma Pneus - Morumbi',      endereco: 'Av. Morumbi, 8120 - Morumbi, São Paulo - SP, 04703-002' },
+      { nome: 'Roma Pneus - Osasco',       endereco: 'Av. dos Autonomistas, 6111 - Osasco - SP, 06194-050' },
+      { nome: 'Roma Pneus - Patriarca',    endereco: 'Av. Antônio Estevão de Carvalho, 2654 - Cidade Patriarca, São Paulo - SP, 03540-200' },
+      { nome: 'Roma Pneus - Santana',      endereco: 'Av. Cruzeiro do Sul, 2867 - Santana, São Paulo - SP, 02031-100' },
+      { nome: 'Roma Pneus - São Caetano',  endereco: 'Av. Goiás, 271 - Santo Antônio, São Caetano do Sul - SP, 09521-310' },
+      { nome: 'Roma Pneus - São Miguel Tito', endereco: 'Av. Marechal Tito, 2273 - São Miguel Paulista, São Paulo - SP, 08022-010' },
+      { nome: 'Roma Pneus - Vila Mariana', endereco: 'R. Vergueiro, 2375 - Vila Mariana, São Paulo - SP, 04101-200' } // CEP corrigido: 04101-100 vai só até o nº 2349
+    ],
+    // WhatsApp de agendamento (o mesmo do televendas, em CONFIG.whatsapp)
+    // Número formatado para o PDF, gerado a partir do CONFIG.whatsapp
+    // (ex.: '5511950552213' vira '(11) 95055-2213'). Trocou o número lá, troca aqui sozinho.
+    whatsappTexto: CONFIG.whatsapp.replace(/^55(\d{2})(\d{4,5})(\d{4})$/, '($1) $2-$3'),
+    codigoPdf: 'DESCONTOS ROMA',      // nome impresso no PDF (o mesmo todo dia)
+    // Cards da vitrine que também podem esconder o bilhete (ids do array CUPONS)
+    cuponsEsconderijo: [
+      'pneus-goodyear', 'montagem', 'alinhamento', 'oleo',
+      'freios', 'suspensao', 'checkup', 'truck'
+    ],
+    // Aviso em destaque no PDF. {desconto} é trocado pelo valor acima.
+    aviso: 'Apresente este PDF na loja e ganhe {desconto} de desconto no serviço indicado.',
+    regras: 'Válido somente na loja indicada, até {fim}. Uso único: depois de utilizado, o cupom perde a validade. Cupom gerado em {gerado}. Não cumulativo com outras promoções.'
+  };
+
+  // Biblioteca do PDF: só é baixada quando alguém clica em "Baixar cupom em PDF".
+  const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+
+  // Logo branca da Roma Pneus embutida (PNG em base64) para o PDF.
+  // Fica dentro do código para o PDF funcionar sem depender de outro arquivo.
+  const LOGO_PDF = 'data:image/png;base64,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';
+  const LOGO_PROPORCAO = 400 / 107; // largura ÷ altura da imagem
+
+  const SVG_BILHETE = '<svg viewBox="0 0 40 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3 2H37a2 2 0 0 1 2 2V10a4 4 0 0 0 0 8V24a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V18a4 4 0 0 0 0-8V4a2 2 0 0 1 2-2Z" fill="#FBBD00" stroke="#0B1D45" stroke-width="1.5"/><path d="M28 5V23" stroke="#0B1D45" stroke-width="1.2" stroke-dasharray="2 2"/><text x="14.5" y="18.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#0B1D45">%</text></svg>';
+
+  /* ---------- utilitários do sorteio ---------- */
+
+  // Transforma um texto num número, sempre o mesmo para o mesmo texto (hash FNV-1a).
+  function hash(texto) {
+    let h = 2166136261;
+    for (let i = 0; i < texto.length; i++) {
+      h ^= texto.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  // Data no fuso de São Paulo (AAAA-MM-DD). offsetDias = -1 → ontem.
+  function dataSP(offsetDias) {
+    const d = new Date(Date.now() + (offsetDias || 0) * 86400000);
+    try {
+      return new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).format(d);
+    } catch (e) {
+      return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+    }
+  }
+
+  function dataBR(iso) {
+    const p = iso.split('-');
+    return p[2] + '/' + p[1] + '/' + p[0];
+  }
+
+  // Sorteia um índice de 0 a total-1 para o dia, sem repetir o de ontem.
+  function sortearDoDia(nome, total) {
+    const sortear = function (iso) { return hash(nome + '|' + iso) % total; };
+    let i = sortear(dataSP(0));
+    if (total > 1 && i === sortear(dataSP(-1))) i = (i + 1) % total;
+    return i;
+  }
+
+  function lerStorage(chave) {
+    try { return window.localStorage.getItem(chave); } catch (e) { return null; }
+  }
+  function gravarStorage(chave, valor) {
+    try { window.localStorage.setItem(chave, valor); } catch (e) {}
+  }
+
+  function enviarEvento(obj) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(obj);
+  }
+
+  /* ---------- carregamento do jsPDF ----------
+     O Magento usa RequireJS. Uma <script> comum faria a biblioteca tentar se
+     registrar nele e dar erro ("Mismatched anonymous define"). Então, se o
+     RequireJS existir, carregamos pelo require(); se não, pela <script>. */
+  let jspdfPromessa = null;
+  function carregarJsPDF() {
+    if (window.jspdf && window.jspdf.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
+    if (jspdfPromessa) return jspdfPromessa;
+
+    jspdfPromessa = new Promise(function (resolve, reject) {
+      const temRequire = typeof window.require === 'function' &&
+                         typeof window.define === 'function' && window.define.amd;
+      if (temRequire) {
+        window.require([JSPDF_URL], function (mod) {
+          if (mod && mod.jsPDF) resolve(mod.jsPDF);
+          else reject(new Error('jsPDF indisponível'));
+        }, reject);
+      } else {
+        const s = document.createElement('script');
+        s.src = JSPDF_URL;
+        s.async = true;
+        s.onload = function () {
+          if (window.jspdf && window.jspdf.jsPDF) resolve(window.jspdf.jsPDF);
+          else reject(new Error('jsPDF indisponível'));
+        };
+        s.onerror = function () { reject(new Error('Falha ao baixar o jsPDF')); };
+        document.head.appendChild(s);
+      }
+    });
+    jspdfPromessa.catch(function () { jspdfPromessa = null; });
+    return jspdfPromessa;
+  }
+
+  /* ---------- arte do PDF ----------
+     A5 deitado, em milímetros (210 x 148). Desenhado com formas e textos;
+     a única imagem é a logo. */
+  /* PDF-ART-START */
+  function desenharCupomPDF(JsPDF, d) {
+    const doc = new JsPDF({ orientation: 'landscape', unit: 'mm', format: 'a5' });
+    const W = 210, H = 148;
+    const azul = [11, 29, 69], azulClaro = [31, 59, 115], amarelo = [251, 189, 0],
+          branco = [255, 255, 255], cinza = [201, 207, 218];
+    const cor = function (metodo, c) { doc[metodo](c[0], c[1], c[2]); };
+
+    // 1. Fundo azul
+    cor('setFillColor', azul);
+    doc.rect(0, 0, W, H, 'F');
+
+    // 2. Faixas inclinadas no rodapé (lembram a banda de rodagem)
+    cor('setFillColor', azulClaro);
+    for (let x = 14; x <= 138; x += 8) {
+      doc.lines([[4, 0], [3, -7], [-4, 0]], x, 137, [1, 1], 'F', true);
+    }
+
+    // 3. Canhoto amarelo à direita
+    const cx = 152;
+    cor('setFillColor', amarelo);
+    doc.roundedRect(cx, 6, W - 6 - cx, H - 12, 4, 4, 'F');
+    doc.rect(cx, 6, 6, H - 12, 'F');
+
+    // 4. Moldura amarela
+    cor('setDrawColor', amarelo);
+    doc.setLineWidth(0.8);
+    doc.roundedRect(6, 6, W - 12, H - 12, 4, 4, 'S');
+
+    // 5. "Mordidas" de ingresso e picote
+    cor('setFillColor', azul);
+    doc.circle(cx, 6, 5, 'F');
+    doc.circle(cx, H - 6, 5, 'F');
+    cor('setDrawColor', azul);
+    doc.setLineWidth(0.4);
+    doc.setLineDashPattern([1.5, 1.5], 0);
+    doc.line(cx + 4, 14, cx + 4, H - 14);
+    doc.setLineDashPattern([], 0);
+
+    // 6. Canhoto: desconto + data
+    const sx = 180;
+    cor('setTextColor', azul);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(40);
+    doc.text(d.desconto, sx, 50, { align: 'center' });
+    doc.setFontSize(20);
+    doc.text('OFF', sx, 62, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.text('no serviço de', sx, 72, { align: 'center' });
+    // Nome do serviço: a fonte diminui se o nome for longo
+    doc.setFont('helvetica', 'bold');
+    let tamServico = 11;
+    doc.setFontSize(tamServico);
+    while (doc.getTextWidth(d.servico.toUpperCase()) > 40 && tamServico > 7) {
+      tamServico -= 0.5;
+      doc.setFontSize(tamServico);
+    }
+    doc.text(d.servico.toUpperCase(), sx, 79, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.text('na loja indicada', sx, 86, { align: 'center' });
+    doc.setLineWidth(0.3);
+    doc.line(sx - 16, 98, sx + 16, 98);
+    doc.setFontSize(7.5);
+    doc.text('VÁLIDO ATÉ', sx, 107, { align: 'center' });
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(15);
+    doc.text(d.validoAte, sx, 116, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.text('AGENDE PELO WHATSAPP', sx, 125, { align: 'center' });
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text(d.whatsappTexto, sx, 130.5, { align: 'center' });
+    doc.link(sx - 20, 121, 40, 12, { url: d.whatsappLink }); // área clicável
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.text('romapneus.com.br', sx, 136, { align: 'center' });
+
+    // 7. Topo: logo + rótulo
+    const mx = 18;
+    if (d.logo) {
+      const alturaLogo = 10;
+      doc.addImage(d.logo, 'PNG', mx, 12.5, alturaLogo * d.logoProporcao, alturaLogo);
+    }
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    cor('setTextColor', amarelo);
+    doc.text('CAÇA AO CUPOM', 144, 20, { align: 'right' });
+
+    // 8. Título e nome do cupom
+    cor('setTextColor', branco);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(30);
+    doc.text('CUPOM DO DIA', mx, 38);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    cor('setTextColor', cinza);
+    doc.text('Você achou o bilhete dourado!', mx, 46);
+
+    cor('setFillColor', branco);
+    doc.roundedRect(mx, 53, 126, 24, 3, 3, 'F');
+    cor('setDrawColor', azul);
+    doc.setLineWidth(0.5);
+    doc.setLineDashPattern([2, 1.5], 0);
+    doc.roundedRect(mx + 2.5, 55.5, 121, 19, 2, 2, 'S');
+    doc.setLineDashPattern([], 0);
+    cor('setTextColor', azul);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(24);
+    doc.text(d.codigo, mx + 63, 68.5, { align: 'center' });
+
+    // 9. Aviso principal (logo abaixo do nome do cupom)
+    doc.setFontSize(12);
+    cor('setTextColor', amarelo);
+    doc.text(doc.splitTextToSize(d.aviso, 126), mx, 86);
+
+    // 10. Chamada para o WhatsApp (o texto inteiro é clicável)
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    cor('setTextColor', branco);
+    doc.text('Mande um print deste cupom e agende o seu serviço com desconto:', mx, 99);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    cor('setTextColor', amarelo);
+    doc.text('WhatsApp ' + d.whatsappTexto, mx, 104);
+    doc.link(mx, 95.5, 126, 9.5, { url: d.whatsappLink });
+
+    // 11. Loja escolhida pelo cliente
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    cor('setTextColor', cinza);
+    doc.text('VÁLIDO SOMENTE NA LOJA', mx, 110.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10.5);
+    cor('setTextColor', branco);
+    doc.text(d.lojaNome, mx, 115.5);
+    doc.setFont('helvetica', 'normal');
+    // Endereço numa linha só: se for longo, a fonte diminui até caber
+    let tamEndereco = 8;
+    doc.setFontSize(tamEndereco);
+    while (doc.getTextWidth(d.lojaEndereco) > 126 && tamEndereco > 6) {
+      tamEndereco -= 0.25;
+      doc.setFontSize(tamEndereco);
+    }
+    doc.text(d.lojaEndereco, mx, 120);
+
+    // 12. Letras miúdas
+    doc.setFontSize(6);
+    cor('setTextColor', cinza);
+    doc.text(doc.splitTextToSize(d.regras, 126), mx, 125);
+
+    return doc;
+  }
+  /* PDF-ART-END */
+
+  /* ---------- montagem do jogo ---------- */
+  function iniciarCacada() {
+    const secao = document.getElementById('rpCacada');
+    if (!secao) return null;
+
+    // Preenche os textos com o desconto da configuração
+    document.querySelectorAll('.rp-page [data-cacada="desconto"]').forEach(function (n) {
+      n.textContent = CACADA.desconto;
+    });
+
+    // Lista de esconderijos: os fixos (data-esconderijo) + os cards de cupom
+    const esconderijos = [];
+    document.querySelectorAll('.rp-page [data-esconderijo]').forEach(function (n) {
+      esconderijos.push({
+        tipo: 'fixo', el: n,
+        nome: n.getAttribute('data-esconderijo'),
+        dica: n.getAttribute('data-dica')
+      });
+    });
+    CACADA.cuponsEsconderijo.forEach(function (id) {
+      const cupom = CUPONS.find(function (c) { return c.id === id; });
+      if (!cupom) return;
+      const cat = CATEGORIAS.find(function (c) { return c.id === cupom.categoria; });
+      esconderijos.push({
+        tipo: 'cupom', id: id, nome: 'cupom-' + id,
+        dica: 'Ele está dentro de um cupom da aba "' + (cat ? cat.rotulo : 'Todos') +
+              '". Se você filtrou um veículo, remova o filtro para ver todos.'
+      });
+    });
+    if (!esconderijos.length) { secao.hidden = true; return null; }
+
+    // Sorteios do dia
+    const hoje = dataSP(0);
+    const esconderijo = esconderijos[sortearDoDia('esconderijo', esconderijos.length)];
+    const servico = CACADA.servicos[sortearDoDia('servico', CACADA.servicos.length)];
+    // Nos cards, o topo já tem etiquetas: o bilhete vai para um canto de baixo
+    const canto = esconderijo.tipo === 'cupom'
+      ? 2 + (hash('canto|' + hoje) % 2)
+      : hash('canto|' + hoje) % 4;
+
+    /* --- Modo prévia ---
+       Abra a página com ?previa-cacada no fim do endereço para testar ou
+       apresentar fora de novembro. Na prévia o período é ignorado e o
+       resgate não fica gravado (dá para repetir quantas vezes quiser).
+       SEGURANÇA: a prévia só funciona ANTES do início da campanha. A partir
+       de 01/11 o parâmetro é ignorado, para nenhum cliente burlar o limite. */
+    let previa = false;
+    try { previa = new URLSearchParams(window.location.search).has('previa-cacada'); } catch (e) {}
+    if (hoje >= CACADA.inicio) previa = false;
+
+    /* --- Período da campanha --- */
+    const periodo = document.getElementById('rpCacadaPeriodo');
+    if (!previa && hoje > CACADA.fim) {
+      // Campanha encerrada: some com a seção, o link do hero e os avisos dos cards
+      secao.hidden = true;
+      const linkHero = document.querySelector('.rp-hero-cacada');
+      if (linkHero) linkHero.hidden = true;
+      cacadaNoAr = false;
+      return null;
+    }
+    if (!previa && hoje < CACADA.inicio) {
+      // Antes de começar: a seção vira um "aguarde" e não há bilhete
+      periodo.textContent = 'A caça ao cupom começa em ' + dataBR(CACADA.inicio).slice(0, 5) + '. Volte aqui!';
+      periodo.hidden = false;
+      ['rpCacadaStatus', 'rpCacadaBtnDica'].forEach(function (id) {
+        document.getElementById(id).hidden = true;
+      });
+      cacadaNoAr = false;
+      return null;
+    }
+
+    /* --- Controle de 1 resgate por dia neste aparelho ---
+       Guardamos no navegador (localStorage) a loja escolhida no dia.
+       Se já existe resgate hoje, o bilhete não aparece mais. */
+    const chaveResgate = 'rp_cacada_resgate_' + hoje;
+    function lerResgate() {
+      if (previa) return null;
+      try { return JSON.parse(lerStorage(chaveResgate) || 'null'); } catch (e) { return null; }
+    }
+    function gravarResgate(loja) {
+      if (previa) return;
+      gravarStorage(chaveResgate, JSON.stringify({ loja: loja.nome }));
+    }
+
+    /* --- Serviços já ganhos no mês (neste aparelho) ---
+       Guardamos a lista de códigos ganhos, ex.: ["ROMA-ALINHAMENTO","ROMA-FREIOS"].
+       Se o serviço sorteado hoje já está na lista, o cliente não ganha de novo. */
+    const chaveGanhos = 'rp_cacada_ganhos_' + hoje.slice(0, 7); // ex.: rp_cacada_ganhos_2026-11
+    function lerGanhos() {
+      if (previa) return [];
+      try { return JSON.parse(lerStorage(chaveGanhos) || '[]'); } catch (e) { return []; }
+    }
+    function gravarGanho(codigo) {
+      if (previa) return;
+      const lista = lerGanhos();
+      if (lista.indexOf(codigo) === -1) lista.push(codigo);
+      gravarStorage(chaveGanhos, JSON.stringify(lista));
+    }
+    const jaGanhouServico = lerGanhos().indexOf(servico.codigo) !== -1;
+
+    // Cria o bilhete (um só elemento, que muda de pai se a grade for redesenhada)
+    const bilhete = document.createElement('button');
+    bilhete.type = 'button';
+    bilhete.className = 'rp-bilhete rp-bilhete--' + canto;
+    bilhete.setAttribute('aria-label', 'Bilhete dourado: clique para pegar o cupom do dia');
+    bilhete.innerHTML = SVG_BILHETE;
+    // Sem bilhete se já resgatou hoje OU se o serviço de hoje já foi ganho no mês
+    let bilheteAtivo = !lerResgate() && !jaGanhouServico;
+
+    function posicionarBilhete() {
+      if (!bilheteAtivo) {
+        if (bilhete.parentNode) bilhete.parentNode.removeChild(bilhete);
+        return;
+      }
+      const alvo = esconderijo.tipo === 'fixo'
+        ? esconderijo.el
+        : el.grid.querySelector('.rp-card[data-id="' + esconderijo.id + '"] .rp-card-head');
+      if (alvo) {
+        alvo.classList.add('rp-tem-bilhete');
+        if (bilhete.parentNode !== alvo) alvo.appendChild(bilhete);
+      } else if (bilhete.parentNode) {
+        bilhete.parentNode.removeChild(bilhete); // card escondido pelo filtro
+      }
+    }
+
+    // Status, revelação do serviço e dica
+    const status = document.getElementById('rpCacadaStatus');
+    const btnDica = document.getElementById('rpCacadaBtnDica');
+    const dica = document.getElementById('rpCacadaDica');
+
+    /* --- Compartilhar: o cliente desafia amigos a achar o bilhete ---
+       Compartilha o LINK da página (não o PDF): o amigo precisa jogar
+       e achar o próprio bilhete. Mais gente procurando = mais carros na loja. */
+    const TEXTO_DESAFIO = 'Achei o cupom de desconto escondido no site da Roma Pneus! ' +
+      'Todo dia de novembro tem um bilhete dourado num lugar diferente da página. ' +
+      'Duvido você achar o de hoje: ';
+    function linkDaPagina() {
+      // Tira o ?previa-cacada para o amigo cair na página normal
+      return window.location.href.split('?')[0].split('#')[0];
+    }
+    function mostrarCompartilhar() {
+      document.querySelectorAll('.rp-page [data-compartilhar]').forEach(function (b) { b.hidden = false; });
+    }
+    document.querySelectorAll('.rp-page [data-compartilhar]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        const url = linkDaPagina();
+        const origem = b.getAttribute('data-compartilhar');
+        // No celular, abre a janela nativa de compartilhar (WhatsApp, Instagram...).
+        // No computador, ou se não houver suporte, abre o WhatsApp Web.
+        if (navigator.share) {
+          navigator.share({ title: 'Caça ao cupom Roma Pneus', text: TEXTO_DESAFIO, url: url })
+            .then(function () { enviarEvento({ event: 'cacada_compartilhar', origem: origem, via: 'nativo' }); })
+            .catch(function () {}); // cliente cancelou
+        } else {
+          window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(TEXTO_DESAFIO + url), '_blank', 'noopener');
+          enviarEvento({ event: 'cacada_compartilhar', origem: origem, via: 'whatsapp' });
+        }
+      });
+    });
+
+    /* --- Agendar no WhatsApp ---
+       A mensagem já vai pronta com cupom, serviço, loja e data: o televendas
+       sabe na hora do que se trata, mesmo sem o print. */
+    function linkAgendar(nomeLoja) {
+      return linkZap(
+        'Olá! Achei o bilhete dourado no site da Roma Pneus.\n' +
+        'Cupom: ' + CACADA.codigoPdf + ' (' + CACADA.desconto + ' em ' + servico.nome + ')\n' +
+        'Loja: ' + nomeLoja + '\n' +
+        'Data do cupom: ' + dataBR(hoje) + '\n' +
+        'Quero agendar meu serviço!'
+      );
+    }
+    function mostrarAgendar(nomeLoja) {
+      document.querySelectorAll('.rp-page [data-agendar]').forEach(function (a) {
+        a.href = linkAgendar(nomeLoja);
+        a.hidden = false;
+      });
+    }
+    document.querySelectorAll('.rp-page [data-agendar]').forEach(function (a) {
+      a.addEventListener('click', function () {
+        enviarEvento({ event: 'cacada_agendar_whatsapp', servico: servico.codigo });
+      });
+    });
+
+    function mostrarResgatado(nomeLoja) {
+      mostrarAgendar(nomeLoja);
+      status.textContent = 'Você já resgatou o cupom de hoje para a loja ' + nomeLoja +
+        '. Volte amanhã: o bilhete muda de lugar!';
+      status.classList.add('is-achado');
+      mostrarCompartilhar();
+      btnDica.hidden = true;
+      dica.hidden = true;
+      // O serviço premiado só é revelado depois que o cliente acha o bilhete
+      document.getElementById('rpCacadaServico').textContent = servico.nome;
+      document.getElementById('rpCacadaServicoSub').textContent = 'Você descobriu!';
+    }
+    const resgateHoje = lerResgate();
+    if (resgateHoje) {
+      mostrarResgatado(resgateHoje.loja);
+    } else if (jaGanhouServico) {
+      // Serviço repetido: avisa logo, para o cliente não procurar à toa
+      status.textContent = 'O serviço premiado de hoje é ' + servico.nome +
+        ', que você já ganhou este mês. Volte amanhã: o prêmio pode ser outro serviço!';
+      status.classList.add('is-achado');
+      btnDica.hidden = true;
+      document.getElementById('rpCacadaServico').textContent = servico.nome;
+      document.getElementById('rpCacadaServicoSub').textContent = 'Você já ganhou este';
+      mostrarCompartilhar();
+    }
+    if (previa) status.textContent = 'Modo prévia: período e limite diário desligados.';
+
+    btnDica.addEventListener('click', function () {
+      const abrir = dica.hidden;
+      dica.textContent = esconderijo.dica || 'Role a página com calma: ele está em algum canto.';
+      dica.hidden = !abrir;
+      btnDica.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+      btnDica.textContent = abrir ? 'Esconder dica' : 'Quero uma dica';
+      if (abrir) enviarEvento({ event: 'cupom_dica', esconderijo: esconderijo.nome });
+    });
+
+    /* --- Pop-ups: as mesmas funções abrem e fecham os dois --- */
+    let ultimoFoco = null;
+    function abrirModal(m) {
+      ultimoFoco = document.activeElement;
+      m.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      m.querySelector('.rp-modal-box').focus();
+    }
+    function fecharModal(m) {
+      if (m.hidden) return;
+      m.hidden = true;
+      document.documentElement.style.overflow = '';
+      if (ultimoFoco && ultimoFoco.focus && document.contains(ultimoFoco)) ultimoFoco.focus();
+    }
+
+    const modal = document.getElementById('rpModal');          // cupom encontrado
+    const convite = document.getElementById('rpModalConvite'); // convite ao jogo
+
+    [modal, convite].forEach(function (m) {
+      m.addEventListener('click', function (ev) {
+        if (ev.target.closest('[data-fechar-modal]')) fecharModal(m);
+      });
+    });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Escape') return;
+      fecharModal(modal);
+      fecharModal(convite);
+    });
+
+    /* --- Pop-up do convite: 1 vez por dia, se ainda não resgatou --- */
+    document.getElementById('rpConviteLista').textContent =
+      CACADA.servicos.map(function (sv) { return sv.nome.toLowerCase(); }).join(', ');
+
+    const chaveConvite = 'rp_cacada_convite_' + hoje;
+    if (bilheteAtivo && (previa || lerStorage(chaveConvite) !== '1')) {
+      // Pequena espera para o cliente ver a página antes do convite
+      setTimeout(function () {
+        if (!modal.hidden) return; // não atrapalha se o outro pop-up já estiver aberto
+        abrirModal(convite);
+        gravarStorage(chaveConvite, '1');
+        enviarEvento({ event: 'cacada_convite_exibido' });
+      }, 1500);
+    }
+    convite.addEventListener('click', function (ev) {
+      const alvo = ev.target.closest('[data-track-convite]');
+      if (alvo) enviarEvento({ event: 'cacada_convite_clique', acao: alvo.getAttribute('data-track-convite') });
+    });
+
+    /* --- Pop-up do cupom encontrado --- */
+    const btnPdf = document.getElementById('rpModalPdf');
+    const aviso = document.getElementById('rpModalAviso');
+    const selLoja = document.getElementById('rpModalLoja');
+    const etapaLoja = document.getElementById('rpModalEtapaLoja');
+
+    document.getElementById('rpModalServico').textContent = servico.nome.toLowerCase();
+    document.getElementById('rpModalCodigo').textContent = servico.codigo;
+    document.getElementById('rpModalData').textContent = dataBR(CACADA.fim);
+
+    // Lista das 13 lojas no select (o value é a posição na lista CACADA.lojas)
+    CACADA.lojas.forEach(function (loja, i) {
+      const op = document.createElement('option');
+      op.value = String(i);
+      op.textContent = loja.nome;
+      selLoja.appendChild(op);
+    });
+    selLoja.addEventListener('change', function () {
+      btnPdf.disabled = selLoja.value === '';
+    });
+
+    bilhete.addEventListener('click', function () {
+      fecharModal(convite);
+      aviso.textContent = '';
+      etapaLoja.hidden = false;
+      abrirModal(modal);
+      enviarEvento({ event: 'cupom_encontrado', esconderijo: esconderijo.nome, servico: servico.codigo });
+    });
+
+    // Gera o PDF (uma vez por dia)
+    btnPdf.addEventListener('click', function () {
+      const loja = CACADA.lojas[parseInt(selLoja.value, 10)];
+      if (!loja) return;
+      if (lerResgate()) { // segurança extra: resgate feito em outra aba
+        aviso.textContent = 'O cupom de hoje já foi gerado neste aparelho.';
+        etapaLoja.hidden = true;
+        return;
+      }
+      btnPdf.disabled = true;
+      aviso.textContent = 'Gerando o seu cupom...';
+
+      carregarJsPDF().then(function (JsPDF) {
+        const doc = desenharCupomPDF(JsPDF, {
+          codigo: CACADA.codigoPdf,
+          desconto: CACADA.desconto,
+          aviso: CACADA.aviso.replace('{desconto}', CACADA.desconto),
+          regras: CACADA.regras.replace('{fim}', dataBR(CACADA.fim)).replace('{gerado}', dataBR(hoje)),
+          servico: servico.nome,
+          validoAte: dataBR(CACADA.fim),
+          lojaNome: loja.nome,
+          lojaEndereco: loja.endereco,
+          whatsappTexto: CACADA.whatsappTexto,
+          whatsappLink: linkAgendar(loja.nome),
+          logo: LOGO_PDF,
+          logoProporcao: LOGO_PROPORCAO
+        });
+        doc.save('descontos-roma-' + hoje + '.pdf');
+
+        // Só marca como resgatado depois que o PDF foi salvo com sucesso
+        gravarResgate(loja);
+        gravarGanho(servico.codigo);
+        bilheteAtivo = previa; // na prévia o bilhete continua na página
+        posicionarBilhete();
+        if (!previa) mostrarResgatado(loja.nome);
+        etapaLoja.hidden = !previa;
+        aviso.textContent = 'Pronto! O cupom foi para os seus downloads. Agende pelo WhatsApp e apresente na loja ' + loja.nome + '.';
+        mostrarAgendar(loja.nome);
+        mostrarCompartilhar();
+        enviarEvento({ event: 'cupom_pdf_baixado', servico: servico.codigo, loja: loja.nome });
+      }).catch(function () {
+        aviso.textContent = 'Não conseguimos gerar o PDF agora. Tente de novo em alguns instantes.';
+      }).then(function () {
+        btnPdf.disabled = selLoja.value === '';
+      });
+    });
+
+    return { aposRenderizar: posicionarBilhete };
+  }
+
+  /* ---------- botão "Copiar" dos cards (ex.: ROMA5) ---------- */
+  el.grid.addEventListener('click', function (ev) {
+    const btn = ev.target.closest('.rp-btn-copiar');
+    if (!btn) return;
+    const codigo = btn.getAttribute('data-copiar');
+    const feedback = function () {
+      btn.textContent = 'Copiado!';
+      setTimeout(function () { btn.textContent = 'Copiar'; }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(codigo).then(feedback).catch(feedback);
+    } else {
+      const tmp = document.createElement('textarea');
+      tmp.value = codigo;
+      document.body.appendChild(tmp);
+      tmp.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(tmp);
+      feedback();
+    }
+    enviarEvento({ event: 'cupom_copiado', cupom: codigo });
+  });
+
+  cacada = iniciarCacada();
+
+  /* ============================================================
+     11) AJUSTES FINAIS
+     ============================================================ */
+  // Mantém a barra de abas grudada logo abaixo da barra de contexto,
+  // mesmo quando ela quebra em duas linhas no mobile.
+  function ajustarSticky() {
+    const h = document.getElementById('rpContexto').offsetHeight;
+    document.querySelector('.rp-page').style.setProperty('--rp-contexto-h', h + 'px');
+  }
+  window.addEventListener('resize', ajustarSticky);
+
+  // Links de WhatsApp fixos
+  document.getElementById('rpZapTopo').href =
+    linkZap('Olá! Gostaria de tirar uma dúvida sobre as ofertas do site.');
+  document.getElementById('rpZapBanner').href =
+    linkZap('Olá! Quero saber mais sobre o parcelamento em 6x sem juros.');
+
+  ajustarSticky();
+  renderizar();
+
+})();
+</script>
